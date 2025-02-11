@@ -15,10 +15,10 @@
 │   │   │   ├── privacy.dart                    # Privacy policy
 │   │   │   ├── setting.dart                    # Settings page
 │   │   ├── first_launch/
-│   │   │   ├── first_view.dart                 # Initial onboarding screen
+│   │   │   ├── first_view.dart                 # Displays Terms of Service and Privacy Policy for user agreement
 │   │   ├── paira/
-│   │   │   ├── paira.dart                      # Pairing logic
-│   │   │   ├── paira_model.dart                # Data model for pairs
+│   │   │   ├── paira.dart                      # AI-like assistant interface
+│   │   │   ├── paira_model.dart                # AI assistant logic and state management
 │   │   ├── routes/
 │   │   │   ├── bubble.dart                     # Chat message bubbles
 │   │   │   ├── chat.dart                       # Main chat screen
