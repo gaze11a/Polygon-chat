@@ -1,3 +1,24 @@
+## 📱 App Screenshots
+
+### 🔑 Login Screen
+![Login Screen](./assets/screenshots/login_screen.png)
+- Users enter their email and password to log in.
+- Firebase Authentication handles authentication.
+- New users can register via the sign-up option.
+- Forgotten passwords can be reset via email.
+
+### 🏠 Home Screen
+![Home Screen](./assets/screenshots/home_screen.png)
+- Displays a list of users based on shared interests.
+- Users can search and filter profiles.
+- Clicking a profile navigates to `UserDetail()`.
+
+### 💬 Chat Screen
+![Chat Screen](./assets/screenshots/chat_screen.png)
+- Real-time messaging with Firebase Firestore.
+- Users can send and receive messages.
+- Supports text and image messages.
+
 ## 📂 Project Structure
 
 ```
@@ -47,3 +68,19 @@
 │   │   │   │   │   ├── user_name.dart          # Displays user names
 │   │   │   │   │   ├── user_name_comment.dart  # User name with comments
 ```
+
+## 📦 Installation
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/gaze11a/Polygon-chat.git
+   ```
+2. Install dependencies:
+   ```sh
+   flutter pub get
+   ```
+3. Run the app:
+   ```sh
+   flutter run
+   ```
+
+---
