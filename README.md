@@ -1,20 +1,23 @@
 ## 📱 App Screenshots
 
 ### 🔑 Login Screen
-![Login Screen](./assets/screenshots/login_screen.png)
+<img src="./assets/screenshots/login_screen.png" alt="Login Screen" width="300">
+
 - Users enter their email and password to log in.
 - Firebase Authentication handles authentication.
 - New users can register via the sign-up option.
 - Forgotten passwords can be reset via email.
 
 ### 🏠 Home Screen
-![Home Screen](./assets/screenshots/home_screen.png)
+<img src="./assets/screenshots/home_screen.png" alt="Home Screen" width="300">
+
 - Displays a list of users based on shared interests.
 - Users can search and filter profiles.
 - Clicking a profile navigates to `UserDetail()`.
 
 ### 💬 Chat Screen
-![Chat Screen](./assets/screenshots/chat_screen.png)
+<img src="./assets/screenshots/chat_screen.png" alt="Chat Screen" width="300">
+
 - Real-time messaging with Firebase Firestore.
 - Users can send and receive messages.
 - Supports text and image messages.
@@ -82,5 +85,3 @@
    ```sh
    flutter run
    ```
-
----
