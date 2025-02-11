@@ -65,7 +65,23 @@ class _ChatroomPageState extends State<ChatroomPage> {
               .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
-              return const Center(child: Text('エラーが発生しました'));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'エラーが発生しました',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${snapshot.error}', // ここでエラーの詳細を表示
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14, color: Colors.red),
+                    ),
+                  ],
+                ),
+              );
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {

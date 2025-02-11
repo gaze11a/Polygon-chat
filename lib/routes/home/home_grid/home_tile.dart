@@ -5,9 +5,9 @@ import 'package:polygon/routes/home/home_grid/title_text.dart';
 
 // ignore: must_be_immutable
 class HomeTile extends StatelessWidget {
-  final String title; // ✅ Made final
-  final String imageURL; // ✅ Made final
-  final String commentText; // ✅ Made final
+  final String title;
+  final String imageURL;
+  final String commentText;
 
   HomeTile(this.title, this.imageURL, this.commentText);
 

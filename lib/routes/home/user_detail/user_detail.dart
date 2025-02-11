@@ -74,20 +74,48 @@ class _UserDetailPageState extends State<UserDetailPage> {
   }
 
   Future<void> makeChat() async {
-    roomname = compstring(username, title);
-    DocumentSnapshot docSnapshot =
-    await FirebaseFirestore.instance.collection('room').doc(roomname).get();
+    if (username.isEmpty) {
+      print("username が取得できていません。処理を中断します。");
+      return;
+    }
 
-    if (!docSnapshot.exists) {
-      await FirebaseFirestore.instance.collection('room').doc(roomname).set({
-        'member': [username, title],
-        'block': false,
-        'blockuser': [],
-      });
-    } else {
-      final data = docSnapshot.data() as Map<String, dynamic>?; // Explicit cast
-      block = data?['block'] ?? false;
-      blockuser = (data?['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
+    roomname = compstring(username, title);
+    print("生成された roomname: $roomname");
+
+    try {
+      final stopwatch = Stopwatch()..start();
+      DocumentSnapshot docSnapshot =
+      await FirebaseFirestore.instance.collection('room').doc(roomname).get();
+      stopwatch.stop();
+      print("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
+
+      if (!docSnapshot.exists) {
+        print("チャットルームを作成します: $roomname");
+        await FirebaseFirestore.instance.collection('room').doc(roomname).set({
+          'member': [username, title],
+          'block': false,
+          'blockuser': [],
+        });
+        block = false;
+        blockuser = [];
+      } else {
+        print("既存のチャットルームを取得: $roomname");
+        final data = docSnapshot.data() as Map<String, dynamic>?;
+
+        if (data == null) {
+          print("Firestore のデータが null です。処理を中断します。");
+          return;
+        }
+
+        block = data['block'] ?? false;
+        blockuser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
+        print("取得したデータ - block: $block, blockuser: $blockuser");
+      }
+
+      print("Firestore からのデータ取得完了");
+    } catch (e) {
+      print("Firestore でエラーが発生: $e");
+      return;
     }
   }
 
@@ -133,7 +161,17 @@ class _UserDetailPageState extends State<UserDetailPage> {
       child: Text('二人だけで会話',
           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
       onPressed: () async {
-        await makeChat();
+        print("ボタンが押されました");
+
+        await makeChat(); // ここで完全にデータ取得を待つ
+        print("makeChat() の処理完了");
+
+        if (!mounted) {
+          print("コンテキストが失われています。画面遷移をスキップ");
+          return;
+        }
+
+        print("Chat画面に遷移します");
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => Chat(
@@ -145,6 +183,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
             ),
           ),
         );
+        print("画面遷移完了");
       },
     );
   }

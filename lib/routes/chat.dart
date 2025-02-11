@@ -1,13 +1,8 @@
-import 'dart:io';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Chat extends StatefulWidget {
   final String opponent;
@@ -30,7 +25,6 @@ class Chat extends StatefulWidget {
 }
 
 class ChatState extends State<Chat> {
-  String message = '';
   String image = '';
   final TextEditingController messageController = TextEditingController();
 
@@ -38,17 +32,11 @@ class ChatState extends State<Chat> {
   String? usermail;
   String? userimage;
 
-  String randLetter() {
-    const int bigLetterStart = 65;
-    const int bigLetterCount = 26;
-    var alphabetArray = <String>[];
-    var rand = math.Random();
-    for (var i = 0; i < 100; i++) {
-      int number = rand.nextInt(bigLetterCount);
-      int randomNumber = number + bigLetterStart;
-      alphabetArray.add(String.fromCharCode(randomNumber));
-    }
-    return alphabetArray.join('');
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    sendInitialMessage(); // 🔥 画面遷移時に最初のメッセージを送信
   }
 
   Future<void> getData() async {
@@ -59,76 +47,49 @@ class ChatState extends State<Chat> {
     });
   }
 
-  Future<void> addMessageToFirebase(String type) async {
-    if (message.isNotEmpty) {
-      FirebaseFirestore.instance
-          .collection('room')
-          .doc(widget.room)
-          .collection(widget.room)
-          .add(
-        {
+  Future<void> sendInitialMessage() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('room')
+        .doc(widget.room)
+        .collection(widget.room)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      print("Firestore: 初回メッセージを送信");
+      await addMessageToFirebase('system', "チャットが開始されました。");
+    } else {
+      print("Firestore: 既にメッセージが存在するため送信しません");
+    }
+  }
+
+  Future<void> addMessageToFirebase(String type, String content) async {
+    if (content.isNotEmpty) {
+      print("Firestore へのメッセージ送信開始: $content");
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('room')
+            .doc(widget.room)
+            .collection(widget.room) // ← Firestore にメッセージを追加
+            .add({
           'type': type,
           'name': username,
-          'content': message,
+          'content': content,
           'date': Timestamp.now(),
-        },
-      );
-      FirebaseFirestore.instance.collection('room').doc(widget.room).update(
-        {'createdAt': Timestamp.now(), 'lastMessage': message},
-      );
+        });
+
+        await FirebaseFirestore.instance.collection('room').doc(widget.room).update({
+          'createdAt': Timestamp.now(),
+          'lastMessage': content,
+        });
+
+        print("Firestore へのメッセージ送信成功");
+      } catch (e) {
+        print("Firestore へのメッセージ送信エラー: $e");
+      }
+    } else {
+      print("メッセージが空のため送信しませんでした");
     }
-  }
-
-  Future<void> blockUser() async {
-    await FirebaseFirestore.instance.collection('room').doc(widget.room).update(
-      {
-        'block': !widget.block,
-        'blockuser': FieldValue.arrayUnion([username])
-      },
-    );
-    setState(() {
-      widget.block = !widget.block;
-      widget.blockuser.add(username!);
-    });
-  }
-
-  Future<void> unblockUser() async {
-    await FirebaseFirestore.instance.collection('room').doc(widget.room).update(
-      {
-        'block': !widget.block,
-        'blockuser': FieldValue.arrayRemove([username])
-      },
-    );
-    setState(() {
-      widget.block = !widget.block;
-      widget.blockuser.remove(username);
-    });
-  }
-
-  Future<void> pushPost(String message) async {
-    Map<String, String> headers = {'content-type': 'application/json'};
-    String body =
-    json.encode({"message": message, "opponent": widget.opponent});
-    var url = Uri.parse(
-        'https://us-central1-fluttetest-2b5b6.cloudfunctions.net/function-2');
-
-    http.Response resp = await http.post(url, headers: headers, body: body);
-
-    if (resp.statusCode == 500) {
-      await Future.delayed(const Duration(seconds: 2));
-      await http.post(url, headers: headers, body: body);
-    }
-  }
-
-  Future<String> sendImageToStorage(File imageFile) async {
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child(widget.room)
-        .child('${username}_${DateTime.now()}');
-
-    UploadTask uploadTask = ref.putFile(imageFile);
-    TaskSnapshot snapshot = await uploadTask;
-    return await snapshot.ref.getDownloadURL();
   }
 
   @override
@@ -153,90 +114,68 @@ class ChatState extends State<Chat> {
                     color: Colors.white, fontWeight: FontWeight.bold),
               ),
               centerTitle: true,
-              actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.block),
-                  tooltip: 'ブロック',
-                  onPressed: () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(
-                              widget.blockuser.contains(username)
-                                  ? '${widget.opponent}をブロック解除しますか？'
-                                  : '${widget.opponent}をブロックしますか？'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('いいえ'),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                            TextButton(
-                              child: const Text('はい', style: TextStyle(color: Colors.red)),
-                              onPressed: () async {
-                                widget.blockuser.contains(username)
-                                    ? await unblockUser()
-                                    : await blockUser();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
             ),
             body: widget.block
                 ? Center(child: Text('${widget.opponent}をブロックしています'))
-                : FutureBuilder(
-              future: getData(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Column(
-                    children: <Widget>[
-                      Expanded(child: Container()), // メッセージリスト
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.photo),
-                              onPressed: () async {
-                                // 画像送信の処理
-                              },
+                : Column(
+              children: <Widget>[
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('room')
+                        .doc(widget.room)
+                        .collection(widget.room) // Firestore の `messages` をリアルタイム取得
+                        .where('date', isNotEqualTo: null) // 🔥 `date` がないデータを防ぐ
+                        .orderBy('date', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      var messages = snapshot.data!.docs;
+                      return ListView.builder(
+                        reverse: true,
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          var messageData = messages[index].data() as Map<String, dynamic>;
+                          return ListTile(
+                            title: Text(messageData['name']),
+                            subtitle: Text(messageData['content']),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: messageController,
+                          decoration: InputDecoration(
+                            hintText: 'メッセージを入力',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            Expanded(
-                              child: TextField(
-                                controller: messageController,
-                                decoration: InputDecoration(
-                                  hintText: 'メッセージを入力',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                ),
-                                onChanged: (text) => message = text,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.send),
-                              onPressed: () async {
-                                if (message.isNotEmpty) {
-                                  await addMessageToFirebase('text');
-                                  messageController.clear();
-                                }
-                              },
-                            ),
-                          ],
+                          ),
                         ),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () async {
+                          String content = messageController.text.trim();
+                          if (content.isNotEmpty) {
+                            await addMessageToFirebase('text', content); // 🔥 `messageController.text` を直接渡す
+                            messageController.clear();
+                          }
+                        },
+                      ),
                     ],
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+                  ),
+                ),
+              ],
             ),
           );
         },
