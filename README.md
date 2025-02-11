@@ -22,6 +22,7 @@
 - Users can send and receive messages.
 - Supports text and image messages.
 
+
 ## 📂 Project Structure
 
 ```
@@ -71,6 +72,7 @@
 │   │   │   │   │   ├── user_name.dart          # Displays user names
 │   │   │   │   │   ├── user_name_comment.dart  # User name with comments
 ```
+
 
 ## 📦 Installation
 1. Clone the repository:
