@@ -1,130 +1,50 @@
-# 📌 Polygon Chat
-
-A chat application built with Flutter 🚀
-
 ## 📂 Project Structure
 
 ```
-├── lib/
-│   ├── lib/
-│   ├──     create_profile.dart
-│   ├──     main.dart
-│   ├──     model.dart
-│   ├──     polygon_drawer.dart
-│   ├──     reset_password.dart
-│   ├──     root.dart
-│   ├──     user_login.dart
-│   │   ├── drawer/
-│   │   ├──     contact.dart
-│   │   ├──     contract.dart
-│   │   ├──     privacy.dart
-│   │   ├──     setting.dart
-│   │   ├── first_launch/
-│   │   ├──     first_view.dart
-│   │   ├── fonts/
-│   │   ├──     NotoSerifJP-Black.otf
-│   │   ├──     NotoSerifJP-Bold.otf
-│   │   ├──     NotoSerifJP-ExtraLight.otf
-│   │   ├──     NotoSerifJP-Light.otf
-│   │   ├──     NotoSerifJP-Medium.otf
-│   │   ├──     NotoSerifJP-Regular.otf
-│   │   ├──     NotoSerifJP-SemiBold.otf
-│   │   ├──     pupupu-free.otf
-│   │   ├── paira/
-│   │   ├──     paira.dart
-│   │   ├──     paira_model.dart
-│   │   ├── routes/
-│   │   ├──     bubble.dart
-│   │   ├──     chat.dart
-│   │   ├──     chatroom.dart
-│   │   │   ├── account/
-│   │   │   ├──     account.dart
-│   │   │   ├──     header_choice.dart
-│   │   │   ├──     hobby_menu.dart
-│   │   │   ├──     hobby_menu_next.dart
-│   │   │   ├──     image_choice.dart
-│   │   │   ├── home/
-│   │   │   ├──     common_list.dart
-│   │   │   ├──     home.dart
-│   │   │   ├──     tab_info.dart
-│   │   │   ├──     user_list.dart
-│   │   │   │   ├── home_grid/
-│   │   │   │   ├──     comment.dart
-│   │   │   │   ├──     home_tile.dart
-│   │   │   │   ├──     image_circle.dart
-│   │   │   │   ├──     title_text.dart
-│   │   │   │   ├── user_detail/
-│   │   │   │   ├──     user_detail.dart
-│   │   │   │   ├──     user_header.dart
-│   │   │   │   ├──     user_hobby.dart
-│   │   │   │   ├──     user_image.dart
-│   │   │   │   ├──     user_name.dart
-│   │   │   │   ├──     user_name_comment.dart
+├── lib/                        # Flutter app main directory
+│   ├── create_profile.dart     # Manages new user profile creation
+│   ├── main.dart               # Checks session data and starts the app
+│   ├── model.dart              # Handles user input and Firebase Storage uploads
+│   ├── polygon_drawer.dart      # Side menu (settings, contact, logout)
+│   ├── reset_password.dart      # Sends password reset emails via Firebase
+│   ├── root.dart                # Manages bottom navigation and notifications
+│   ├── user_login.dart          # Handles Firebase Authentication login
+│   │   ├── drawer/              # Side navigation pages
+│   │   │   ├── contact.dart     # Contact page
+│   │   │   ├── contract.dart    # Terms & conditions
+│   │   │   ├── privacy.dart     # Privacy policy
+│   │   │   ├── setting.dart     # Settings page
+│   │   ├── first_launch/        # First-time setup
+│   │   │   ├── first_view.dart  # Initial onboarding screen
+│   │   ├── paira/               # Matching-related features
+│   │   │   ├── paira.dart       # Pairing logic
+│   │   │   ├── paira_model.dart # Data model for pairs
+│   │   ├── routes/              # Main navigation screens
+│   │   │   ├── bubble.dart      # Chat message bubbles
+│   │   │   ├── chat.dart        # Main chat screen
+│   │   │   ├── chatroom.dart    # Individual chat rooms
+│   │   │   ├── account/         # User account management
+│   │   │   │   ├── account.dart # User profile page
+│   │   │   │   ├── header_choice.dart # User header image selection
+│   │   │   │   ├── hobby_menu.dart    # Hobby selection menu
+│   │   │   │   ├── hobby_menu_next.dart # Next step in hobby selection
+│   │   │   │   ├── image_choice.dart  # User profile image selection
+│   │   │   ├── home/           # Home screen components
+│   │   │   │   ├── common_list.dart  # Shows users with similar interests
+│   │   │   │   ├── home.dart         # Main home screen
+│   │   │   │   ├── tab_info.dart     # Manages home screen tabs
+│   │   │   │   ├── user_list.dart    # User list in home screen
+│   │   │   │   ├── home_grid/        # UI components for home page
+│   │   │   │   │   ├── comment.dart  # User comment section
+│   │   │   │   │   ├── home_tile.dart # Tile UI for displaying users
+│   │   │   │   │   ├── image_circle.dart # Circular profile images
+│   │   │   │   │   ├── title_text.dart # UI component for text titles
+│   │   │   │   ├── user_detail/       # User profile details
+│   │   │   │   │   ├── user_detail.dart  # Full user profile screen
+│   │   │   │   │   ├── user_header.dart  # Displays header images
+│   │   │   │   │   ├── user_hobby.dart   # User hobbies display
+│   │   │   │   │   ├── user_image.dart   # Profile images
+│   │   │   │   │   ├── user_name.dart    # Displays user names
+│   │   │   │   │   ├── user_name_comment.dart  # User name with comments
 ```
 
-## 📜 File Descriptions
-
-### 🏠 Main Files
-- **`main.dart`** → Determines whether to show the login screen or first-time launch setup
-- **`root.dart`** → Handles bottom navigation and main screen transitions, manages Firebase Messaging (FCM) tokens for notifications
-- **`model.dart`** → Manages user input, image uploads, and form validation, including image compression for Firebase Storage
-- **`polygon_drawer.dart`** → Controls the app's side navigation drawer, providing access to settings, contact, and logout functionality
-- **`reset_password.dart`** → Handles password reset by sending a reset link to the user's registered email
-
-### 🔥 Authentication & User
-- **`user_login.dart`** → Handles user authentication via Firebase
-- **`create_profile.dart`** → Manages new user profile creation
-
-### 🗂 Drawer (Navigation Menu)
-- **`drawer/contact.dart`** → Contact page
-- **`drawer/contract.dart`** → Terms and conditions page
-- **`drawer/privacy.dart`** → Privacy policy page
-- **`drawer/setting.dart`** → App settings screen
-
-### 🏡 Home & Navigation
-- **`routes/home.dart`** → Main home screen UI and logic
-- **`routes/chat.dart`** → Main chat screen
-- **`routes/chatroom.dart`** → Chat room detail screen
-- **`routes/bubble.dart`** → UI for chat message bubbles
-
-### 📸 User Detail & Profile
-- **`user_detail/user_detail.dart`** → User profile screen
-- **`user_detail/user_image.dart`** → Displays user profile images
-- **`user_detail/user_name.dart`** → Displays user names
-- **`user_detail/user_hobby.dart`** → Displays user hobbies
-
-### 🎨 UI Components & Widgets
-- **`home_grid/comment.dart`** → UI for post comments
-- **`home_grid/home_tile.dart`** → Tile UI for home screen
-- **`home_grid/image_circle.dart`** → Circular image display widget
-- **`home_grid/title_text.dart`** → UI component for title text
-
-## 🔄 Flow of Events
-1. **User opens the app** → `main.dart` checks session data
-2. **If it's the first launch** → The app navigates to `FirstView()` (e.g., contract or onboarding screen)
-3. **If the user is logged in** → The app navigates to `RootWidget(usermail: mail!)`
-4. **If no login data is found** → The app redirects to `UserLogin()`
-5. **User enters profile information** → `model.dart` handles text input, stores values, and validates required fields
-6. **User uploads a profile image** → `model.dart` compresses and uploads the image to Firebase Storage
-7. **User accesses settings or contacts** → `polygon_drawer.dart` manages navigation to `Setting()` and `Contact()`
-8. **User logs out** → `polygon_drawer.dart` clears session data and removes Firebase Cloud Messaging (FCM) tokens
-9. **User requests a password reset** → `reset_password.dart` sends a reset link using Firebase Authentication
-10. **User logs in** → `user_login.dart` handles authentication
-11. **User navigates between screens** → `root.dart` manages bottom navigation transitions
-12. **User receives a notification** → `root.dart` processes Firebase Cloud Messaging (FCM) token updates
-
-## 📦 Installation
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/gaze11a/Polygon-chat.git
-   ```
-2. Install dependencies:
-   ```sh
-   flutter pub get
-   ```
-3. Run the app:
-   ```sh
-   flutter run
-   ```
-
----
