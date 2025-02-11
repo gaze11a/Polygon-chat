@@ -65,46 +65,46 @@ A chat application built with Flutter 🚀
 ## 📜 File Descriptions
 
 ### 🏠 Main Files
-- **`main.dart`** → アプリのエントリーポイント。MaterialAppをセットアップし、ルートを管理
-- **`root.dart`** → アプリのメインの画面遷移を制御
-- **`model.dart`** → ユーザーデータの登録と管理を処理
-- **`polygon_drawer.dart`** → UIのカスタムポリゴンドロワーを処理
-- **`reset_password.dart`** → パスワードリセット画面
+- **`main.dart`** → The entry point of the app, setting up `MaterialApp` and managing routes
+- **`root.dart`** → Handles the main navigation flow of the app
+- **`model.dart`** → Manages user data registration and storage
+- **`polygon_drawer.dart`** → Handles custom polygon drawer UI
+- **`reset_password.dart`** → Password reset screen
 
 ### 🔥 Authentication & User
-- **`user_login.dart`** → Firebase認証を使ったログイン処理
-- **`create_profile.dart`** → 新規ユーザーのプロフィール作成処理
+- **`user_login.dart`** → Handles user authentication via Firebase
+- **`create_profile.dart`** → Manages new user profile creation
 
-### 🗂 Drawer (メニュー画面)
-- **`drawer/contact.dart`** → お問い合わせ画面
-- **`drawer/contract.dart`** → 契約関連のページ
-- **`drawer/privacy.dart`** → プライバシーポリシー
-- **`drawer/setting.dart`** → アプリの設定画面
+### 🗂 Drawer (Navigation Menu)
+- **`drawer/contact.dart`** → Contact page
+- **`drawer/contract.dart`** → Terms and conditions page
+- **`drawer/privacy.dart`** → Privacy policy page
+- **`drawer/setting.dart`** → App settings screen
 
 ### 🏡 Home & Navigation
-- **`routes/home.dart`** → ホーム画面のUIとロジック
-- **`routes/chat.dart`** → チャット機能のメイン画面
-- **`routes/chatroom.dart`** → チャットルームの詳細画面
-- **`routes/bubble.dart`** → チャットの吹き出しUIを定義
+- **`routes/home.dart`** → Main home screen UI and logic
+- **`routes/chat.dart`** → Main chat screen
+- **`routes/chatroom.dart`** → Chat room detail screen
+- **`routes/bubble.dart`** → UI for chat message bubbles
 
 ### 📸 User Detail & Profile
-- **`user_detail/user_detail.dart`** → ユーザープロフィール画面
-- **`user_detail/user_image.dart`** → ユーザーのプロフィール画像表示
-- **`user_detail/user_name.dart`** → ユーザー名の表示
-- **`user_detail/user_hobby.dart`** → ユーザーの趣味情報を表示
+- **`user_detail/user_detail.dart`** → User profile screen
+- **`user_detail/user_image.dart`** → Displays user profile images
+- **`user_detail/user_name.dart`** → Displays user names
+- **`user_detail/user_hobby.dart`** → Displays user hobbies
 
 ### 🎨 UI Components & Widgets
-- **`home_grid/comment.dart`** → 投稿のコメント表示
-- **`home_grid/home_tile.dart`** → ホーム画面のタイルUI
-- **`home_grid/image_circle.dart`** → 円形の画像表示ウィジェット
-- **`home_grid/title_text.dart`** → タイトルのテキストUI
+- **`home_grid/comment.dart`** → UI for post comments
+- **`home_grid/home_tile.dart`** → Tile UI for home screen
+- **`home_grid/image_circle.dart`** → Circular image display widget
+- **`home_grid/title_text.dart`** → UI component for title text
 
 ## 🔄 Flow of Events
-1. **User opens the app** → `main.dart` が `root.dart` を起動
-2. **User logs in** → `user_login.dart` でFirebase認証
-3. **User navigates to home** → `routes/home.dart` に遷移
-4. **User enters a chat** → `routes/chat.dart` に移動し、`chatroom.dart` でメッセージ表示
-5. **User views a profile** → `user_detail/user_detail.dart` を開く
+1. **User opens the app** → `main.dart` loads `root.dart`
+2. **User logs in** → `user_login.dart` handles Firebase authentication
+3. **User navigates to home** → Moves to `routes/home.dart`
+4. **User enters a chat** → Moves to `routes/chat.dart` and displays messages in `chatroom.dart`
+5. **User views a profile** → Opens `user_detail/user_detail.dart`
 
 ## 📦 Installation
 1. Clone the repository:
