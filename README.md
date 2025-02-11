@@ -1,14 +1,14 @@
 ## 📂 Project Structure
 
 ```
-├── lib/                        # Flutter app main directory
-│   ├── create_profile.dart     # Manages new user profile creation
+├── lib/
 │   ├── main.dart               # Checks session data and starts the app
-│   ├── model.dart              # Handles user input and Firebase Storage uploads
-│   ├── polygon_drawer.dart      # Side menu (settings, contact, logout)
-│   ├── reset_password.dart      # Sends password reset emails via Firebase
-│   ├── root.dart                # Manages bottom navigation and notifications
 │   ├── user_login.dart          # Handles Firebase Authentication login
+│   ├── root.dart                # Manages bottom navigation and notifications
+│   ├── polygon_drawer.dart      # Side menu (settings, contact, logout)
+│   ├── create_profile.dart     # Manages new user profile creation
+│   ├── model.dart              # Handles user input and Firebase Storage uploads
+│   ├── reset_password.dart      # Sends password reset emails via Firebase
 │   │   ├── drawer/              # Side navigation pages
 │   │   │   ├── contact.dart     # Contact page
 │   │   │   ├── contract.dart    # Terms & conditions
