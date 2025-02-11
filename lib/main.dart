@@ -31,7 +31,7 @@ class CheckData extends StatefulWidget {
   const CheckData({super.key});
 
   @override
-  State<CheckData> createState() => CheckDataState(); // ✅ クラス名を修正
+  State<CheckData> createState() => CheckDataState();
 }
 
 class CheckDataState extends State<CheckData> {
