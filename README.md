@@ -65,11 +65,11 @@ A chat application built with Flutter 🚀
 ## 📜 File Descriptions
 
 ### 🏠 Main Files
-- **`main.dart`** → The entry point of the app, setting up `MaterialApp` and managing routes
-- **`root.dart`** → Handles the main navigation flow of the app
-- **`model.dart`** → Manages user data registration and storage
-- **`polygon_drawer.dart`** → Handles custom polygon drawer UI
-- **`reset_password.dart`** → Password reset screen
+- **`main.dart`** → Determines whether to show the login screen or first-time launch setup
+- **`root.dart`** → Handles bottom navigation and main screen transitions, manages Firebase Messaging (FCM) tokens for notifications
+- **`model.dart`** → Manages user input, image uploads, and form validation, including image compression for Firebase Storage
+- **`polygon_drawer.dart`** → Controls the app's side navigation drawer, providing access to settings, contact, and logout functionality
+- **`reset_password.dart`** → Handles password reset by sending a reset link to the user's registered email
 
 ### 🔥 Authentication & User
 - **`user_login.dart`** → Handles user authentication via Firebase
@@ -100,11 +100,18 @@ A chat application built with Flutter 🚀
 - **`home_grid/title_text.dart`** → UI component for title text
 
 ## 🔄 Flow of Events
-1. **User opens the app** → `main.dart` loads `root.dart`
-2. **User logs in** → `user_login.dart` handles Firebase authentication
-3. **User navigates to home** → Moves to `routes/home.dart`
-4. **User enters a chat** → Moves to `routes/chat.dart` and displays messages in `chatroom.dart`
-5. **User views a profile** → Opens `user_detail/user_detail.dart`
+1. **User opens the app** → `main.dart` checks session data
+2. **If it's the first launch** → The app navigates to `FirstView()` (e.g., contract or onboarding screen)
+3. **If the user is logged in** → The app navigates to `RootWidget(usermail: mail!)`
+4. **If no login data is found** → The app redirects to `UserLogin()`
+5. **User enters profile information** → `model.dart` handles text input, stores values, and validates required fields
+6. **User uploads a profile image** → `model.dart` compresses and uploads the image to Firebase Storage
+7. **User accesses settings or contacts** → `polygon_drawer.dart` manages navigation to `Setting()` and `Contact()`
+8. **User logs out** → `polygon_drawer.dart` clears session data and removes Firebase Cloud Messaging (FCM) tokens
+9. **User requests a password reset** → `reset_password.dart` sends a reset link using Firebase Authentication
+10. **User logs in** → `user_login.dart` handles authentication
+11. **User navigates between screens** → `root.dart` manages bottom navigation transitions
+12. **User receives a notification** → `root.dart` processes Firebase Cloud Messaging (FCM) token updates
 
 ## 📦 Installation
 1. Clone the repository:
