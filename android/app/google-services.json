@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "312866225890",
+    "project_id": "polygon-cb920",
+    "storage_bucket": "polygon-cb920.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312866225890:android:7a04fa847d51008ef1e8bb",
+        "android_client_info": {
+          "package_name": "polygon.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9-5PcXU07R3TbpYm1A4t4RW9Adm7Ks38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
