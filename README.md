@@ -21,15 +21,6 @@ A chat application built with Flutter 🚀
 │   │   ├──     setting.dart
 │   │   ├── first_launch/
 │   │   ├──     first_view.dart
-│   │   ├── fonts/
-│   │   ├──     NotoSerifJP-Black.otf
-│   │   ├──     NotoSerifJP-Bold.otf
-│   │   ├──     NotoSerifJP-ExtraLight.otf
-│   │   ├──     NotoSerifJP-Light.otf
-│   │   ├──     NotoSerifJP-Medium.otf
-│   │   ├──     NotoSerifJP-Regular.otf
-│   │   ├──     NotoSerifJP-SemiBold.otf
-│   │   ├──     pupupu-free.otf
 │   │   ├── paira/
 │   │   ├──     paira.dart
 │   │   ├──     paira_model.dart
