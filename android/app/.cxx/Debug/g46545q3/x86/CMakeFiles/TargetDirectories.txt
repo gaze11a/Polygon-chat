@@ -1,0 +1,2 @@
+C:/Users/kamer/Desktop/Programming/polygon/android/app/.cxx/Debug/g46545q3/x86/CMakeFiles/edit_cache.dir
+C:/Users/kamer/Desktop/Programming/polygon/android/app/.cxx/Debug/g46545q3/x86/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,2 @@
+C:/Users/kamer/Desktop/Programming/polygon/android/app/.cxx/RelWithDebInfo/4r3a3o1e/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/kamer/Desktop/Programming/polygon/android/app/.cxx/RelWithDebInfo/4r3a3o1e/armeabi-v7a/CMakeFiles/rebuild_cache.dir
