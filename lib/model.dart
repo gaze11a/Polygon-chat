@@ -18,7 +18,7 @@ class Model extends ChangeNotifier {
   String userHeader = '';
   String userPassword = '';
   String infoText = '';
-
+  String passwordError = '';
 
 
   Future<File?> compressImage(File imageFile, int quality) async {
@@ -39,6 +39,7 @@ class Model extends ChangeNotifier {
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) {
         debugPrint("[DEBUG] No image selected.");
+        closeLoadingDialog(navigatorKey.currentContext!);
         return ""; // 空文字を返す（AssetImage を使う）
       }
 
@@ -48,7 +49,7 @@ class Model extends ChangeNotifier {
       File? compressedFile = await compressImage(imageFile, 50);
       if (compressedFile == null) {
         debugPrint("[DEBUG] Image compression failed.");
-        Navigator.of(navigatorKey.currentContext!).pop();
+        closeLoadingDialog(navigatorKey.currentContext!);
         return ""; // 空文字を返す（AssetImage を使う）
       }
 
@@ -58,11 +59,11 @@ class Model extends ChangeNotifier {
       String imageURL = await snapshot.ref.getDownloadURL();
 
       debugPrint("[DEBUG] Upload successful. Image URL: $imageURL");
-      Navigator.of(navigatorKey.currentContext!).pop();
+      closeLoadingDialog(navigatorKey.currentContext!);
       return imageURL;
     } catch (e) {
       debugPrint("[ERROR] Firebase upload failed: $e");
-      Navigator.of(navigatorKey.currentContext!).pop();
+      closeLoadingDialog(navigatorKey.currentContext!);
       return "";
     }
   }
@@ -171,9 +172,6 @@ class Model extends ChangeNotifier {
     }
   }
 
-
-
-
   // 🔹 パスワード入力用のダイアログ
   Future<String?> showPasswordDialog(BuildContext context) async {
     String password = "";
@@ -227,61 +225,76 @@ class Model extends ChangeNotifier {
     ) ?? false;
   }
 
-  checkform(BuildContext context) {
+
+  void checkForm(BuildContext context) {
     if (userName.isEmpty) {
-      Navigator.of(context).pop();
       dialog(context, 'ユーザー名を入力してください');
+    } else if (userName.length > 16) {
+      dialog(context, 'ユーザー名は16文字以内で入力してください');
     } else if (userMail.isEmpty) {
-      Navigator.of(context).pop();
       dialog(context, 'メールアドレスを入力してください');
     } else if (userPassword.isEmpty) {
-      Navigator.of(context).pop();
       dialog(context, 'パスワードを入力してください');
+    } else if (userPassword.length < 8 || userPassword.length > 16) {
+      dialog(context, 'パスワードは半角英数字8文字以上16文字以内で入力してください');
     }
   }
 
-  Widget textForm(BuildContext context, String title, String hinttext) {
+
+  Widget textForm(BuildContext context, String title) {
     Size size = MediaQuery.of(context).size;
 
-    return Row(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 5.0),
-          child: Text(title, style: const TextStyle(fontSize: 15)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 5.0),
+              child: Text(title, style: const TextStyle(fontSize: 15)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: size.width * 0.6,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black),
+                    borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+                child: TextField(
+                  maxLength: (title == 'ユーザー名') ? 16 : null,
+                  obscureText: (title == 'パスワード') ? true : false,
+                  decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(
+                          top: 5.0, bottom: 5.0, left: 10.0, right: 5.0)),
+                  onChanged: (text) {
+                    switch (title) {
+                      case 'ユーザー名':
+                        userName = text;
+                        break;
+                      case 'Eメール':
+                        userMail = text;
+                        break;
+                      case 'パスワード':
+                        userPassword = text;
+                        break;
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: size.width * 0.6,
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black),
-                borderRadius: const BorderRadius.all(Radius.circular(8.0))),
-            child: TextField(
-              maxLength: (title == 'ユーザー名') ? 8 : null,
-              obscureText: (title == 'パスワード') ? true : false,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.only(
-                      top: 5.0, bottom: 5.0, left: 10.0, right: 5.0),
-                  hintText: hinttext),
-              onChanged: (text) {
-                switch (title) {
-                  case 'ユーザー名':
-                    userName = text;
-                    break;
-                  case 'Eメール':
-                    userMail = text;
-                    break;
-                  case 'パスワード':
-                    userPassword = text;
-                    break;
-                }
-              },
+        if (title == 'パスワード' && passwordError.isNotEmpty) // 🔹 パスワードのエラーがあれば表示
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Text(
+              passwordError,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
-        ),
       ],
     );
   }

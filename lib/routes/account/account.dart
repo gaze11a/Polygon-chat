@@ -45,7 +45,6 @@ class AccountPageState extends State<AccountPage> {
     userImage = prefs.getString('image') ?? '';
     userHeader = prefs.getString('header') ?? '';
     comment = prefs.getString('comment') ?? '';
-    hobby = prefs.getString('hobby') ?? '';
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polygon/create_profile.dart';
+import 'package:polygon/loading_dialog.dart';
 import 'package:polygon/reset_password.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,11 +86,16 @@ class UserLoginState extends State<UserLogin> {
                   child: ElevatedButton(
                     child: const Text('ログイン', style: TextStyle(fontSize: 15)),
                     onPressed: () async {
+                      loadingDialog(context);
+
                       try {
                         final loginResult = await auth.signInWithEmailAndPassword(
                           email: userMail,
                           password: userPassword,
                         );
+
+                        closeLoadingDialog(navigatorKey.currentContext!);
+
                         if (loginResult.user?.emailVerified == true) {
                           await saveData(loginResult.user!.email!);
                           Navigator.of(navigatorKey.currentContext!).pushReplacement(
@@ -103,6 +109,8 @@ class UserLoginState extends State<UserLogin> {
                           });
                         }
                       } catch (e) {
+                        closeLoadingDialog(navigatorKey.currentContext!);
+
                         setState(() {
                           showErrorDialog(context, 'ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。');
                         });

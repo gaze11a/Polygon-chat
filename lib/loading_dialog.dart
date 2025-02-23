@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void loadingDialog(BuildContext context) {
   showDialog(
-    barrierDismissible: false, // 通信中は閉じられないようにする
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       return Dialog(
@@ -22,3 +22,10 @@ void loadingDialog(BuildContext context) {
     },
   );
 }
+
+void closeLoadingDialog(BuildContext context) {
+  if (Navigator.of(context, rootNavigator: true).canPop()) {
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+}
+

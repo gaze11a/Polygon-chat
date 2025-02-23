@@ -102,9 +102,9 @@ class CreateProfileState extends State<CreateProfile> {
                       height: 20.0,
                       thickness: 2.0,
                     ),
-                    model.textForm(context, 'ユーザー名', '例: 松雪パイラ'),
-                    model.textForm(context, 'Eメール', '例: paira@polygon.com'),
-                    model.textForm(context, 'パスワード', '半角英数字記号 (6文字以上)'),
+                    model.textForm(context, 'ユーザー名'),
+                    model.textForm(context, 'Eメール'),
+                    model.textForm(context, 'パスワード'),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ElevatedButton(
@@ -116,7 +116,7 @@ class CreateProfileState extends State<CreateProfile> {
                         ),
                         onPressed: () async {
                           loadingDialog(context);
-                          model.checkform(context);
+                          model.checkForm(context);
 
                           try {
                             DocumentSnapshot docSnapshot =
@@ -142,7 +142,6 @@ class CreateProfileState extends State<CreateProfile> {
                                     'imageURL': userImage,
                                     'headerURL': '',
                                     'comment': '',
-                                    'hobby': '',
                                     'mail': model.userMail,
                                     'createdAt': Timestamp.now(),
                                   },
@@ -153,6 +152,8 @@ class CreateProfileState extends State<CreateProfile> {
                                     .doc(model.userName)
                                     .set({'fcmtoken': []});
                               }
+
+                              closeLoadingDialog(navigatorKey.currentContext!);
 
                               showDialog(
                                 context: navigatorKey.currentContext!,
@@ -175,11 +176,13 @@ class CreateProfileState extends State<CreateProfile> {
                                 },
                               );
                             } else {
+                              closeLoadingDialog(navigatorKey.currentContext!);
                               model.dialog(
                                   navigatorKey.currentContext!,
                                   "そのユーザー名は既に登録されています。");
                             }
                           } catch (e) {
+                            closeLoadingDialog(navigatorKey.currentContext!);
                             model.dialog(
                                 navigatorKey.currentContext!,
                                 "エラーが発生しました: ${e.toString()}");
