@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:polygon/routes/account/image_choice.dart'; // 🔥 追加
 import 'package:polygon/routes/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
@@ -32,8 +33,9 @@ class CreateProfileState extends State<CreateProfile> {
               title: const Text(
                 "新規登録",
                 style: TextStyle(
-                    color: Color.fromRGBO(90, 200, 250, 1.0),
-                    fontWeight: FontWeight.bold),
+                  color: Color.fromRGBO(90, 200, 250, 1.0),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               centerTitle: true,
               leading: IconButton(
@@ -47,64 +49,15 @@ class CreateProfileState extends State<CreateProfile> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(children: <Widget>[
-                    SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: InkWell(
-                        onTap: () async {
-                          String newImage =
-                          await model.setImage(context, '${model.userName} + image');
-                          setState(() {
-                            userImage = newImage;
-                          });
-                        },
-                        child: userImage.isEmpty
-                            ? Container(
-                          width: 130.0,
-                          height: 130.0,
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 7),
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: const AssetImage('assets/preimage.JPG'),
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withAlpha(153),
-                                BlendMode.dstATop,
-                              ),
-                            ),
-                          ),
-                          child: const Icon(Icons.collections),
-                        )
-                            : Container(
-                          width: 130.0,
-                          height: 130.0,
-                          margin: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 7),
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(userImage),
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withAlpha(153),
-                                BlendMode.dstATop,
-                              ),
-                            ),
-                          ),
-                          child: const Icon(Icons.collections),
-                        ),
-                      ),
-                    ),
+                    ImageChoice(model.userName, userImage),
+
                     const Text('ユーザーアイコン'),
-                    const Divider(
-                      height: 20.0,
-                      thickness: 2.0,
-                    ),
+                    const Divider(height: 20.0, thickness: 2.0),
+
                     model.textForm(context, 'ユーザー名'),
                     model.textForm(context, 'Eメール'),
                     model.textForm(context, 'パスワード'),
+
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ElevatedButton(

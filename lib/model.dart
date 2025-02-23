@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:polygon/loading_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'main.dart';
 
 class Model extends ChangeNotifier {
   String userName = '';
@@ -20,53 +14,6 @@ class Model extends ChangeNotifier {
   String infoText = '';
   String passwordError = '';
 
-
-  Future<File?> compressImage(File imageFile, int quality) async {
-    final XFile? compressedFile = await FlutterImageCompress.compressAndGetFile(
-      imageFile.absolute.path,
-      '${imageFile.path}_compressed.jpg',
-      quality: quality,
-    );
-
-    return compressedFile != null ? File(compressedFile.path) : null;
-  }
-
-  Future<String> setImage(BuildContext context, String filename) async {
-    try {
-      loadingDialog(context);
-      debugPrint("[DEBUG] setImage() called for filename: $filename");
-
-      final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile == null) {
-        debugPrint("[DEBUG] No image selected.");
-        closeLoadingDialog(navigatorKey.currentContext!);
-        return ""; // 空文字を返す（AssetImage を使う）
-      }
-
-      File imageFile = File(pickedFile.path);
-      debugPrint("[DEBUG] Image picked: ${imageFile.path}");
-
-      File? compressedFile = await compressImage(imageFile, 50);
-      if (compressedFile == null) {
-        debugPrint("[DEBUG] Image compression failed.");
-        closeLoadingDialog(navigatorKey.currentContext!);
-        return ""; // 空文字を返す（AssetImage を使う）
-      }
-
-      Reference ref = FirebaseStorage.instance.ref().child('user').child(filename);
-      UploadTask uploadTask = ref.putFile(compressedFile);
-      TaskSnapshot snapshot = await uploadTask;
-      String imageURL = await snapshot.ref.getDownloadURL();
-
-      debugPrint("[DEBUG] Upload successful. Image URL: $imageURL");
-      closeLoadingDialog(navigatorKey.currentContext!);
-      return imageURL;
-    } catch (e) {
-      debugPrint("[ERROR] Firebase upload failed: $e");
-      closeLoadingDialog(navigatorKey.currentContext!);
-      return "";
-    }
-  }
 
   Future<void> deleteAccount(BuildContext context, String password) async {
     debugPrint("[DEBUG] deleteAccount() called!");
