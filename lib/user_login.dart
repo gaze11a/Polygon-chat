@@ -31,7 +31,6 @@ class _UserLogin extends State<UserLogin> {
       prefs.setString('image', result['imageURL'] ?? '');
       prefs.setString('header', result['headerURL'] ?? '');
       prefs.setString('comment', result['comment'] ?? '');
-      prefs.setString('hobby', (result['hobby'] as List<dynamic>?)?.join(',') ?? '');
     }
   }
 

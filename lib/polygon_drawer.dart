@@ -61,7 +61,7 @@ class PolygonDrawer extends StatelessWidget {
                             'いいえ',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          onPressed: () async {
+                          onPressed: () {
                             Navigator.pop(context);
                           },
                         ),
@@ -77,25 +77,37 @@ class PolygonDrawer extends StatelessWidget {
                             String username = prefs.getString('name') ?? '';
                             String token = prefs.getString('token') ?? '';
 
-                            await FirebaseFirestore.instance
-                                .collection('token')
-                                .doc(username)
-                                .update({
-                              'fcmtoken': FieldValue.arrayRemove([token])
+                            // 🔹 Firestore の `token` を削除（null の場合はスキップ）
+                            try {
+                              if (username.isNotEmpty && token.isNotEmpty) {
+                                await FirebaseFirestore.instance
+                                    .collection('token')
+                                    .doc(username)
+                                    .update({
+                                  'fcmtoken': FieldValue.arrayRemove([token])
+                                });
+                                print("[DEBUG] Token removed from Firestore.");
+                              }
+                            } catch (e) {
+                              print("[ERROR] Failed to remove token: $e");
+                            }
+
+                            // 🔹 SharedPreferences をクリア
+                            await prefs.clear();
+                            print("[DEBUG] SharedPreferences cleared.");
+
+                            // 🔹 必要な設定値を復元
+                            await prefs.setBool('isFirstLaunch', false);
+                            await prefs.setBool('isFirstChoice', false);
+                            await prefs.setBool('isExplain', false);
+
+                            // 🔹 確実に画面を遷移するため `Future.delayed` を使用
+                            Future.delayed(Duration.zero, () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (context) => UserLogin()),
+                                    (route) => false,
+                              );
                             });
-
-                            prefs.clear();
-
-                            prefs.setBool('isFirstLaunch', false);
-                            prefs.setBool('isFirstChoice', false);
-                            prefs.setBool('isExplain', false);
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserLogin(),
-                              ),
-                            );
                           },
                         ),
                       ],

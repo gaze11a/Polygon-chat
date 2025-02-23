@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:polygon/model.dart';
 import 'user_login.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:polygon/first_launch/first_view.dart';
 
-// ログインに失敗したときログイン失敗ポップアウト
-// delete paira and hobby menu
-// フレンド機能の追加
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const App());
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => Model()),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 class App extends StatelessWidget {
@@ -31,35 +37,33 @@ class App extends StatelessWidget {
   }
 }
 
-class CheckData extends StatefulWidget {
+class CheckData extends StatelessWidget {
   const CheckData({super.key});
 
-  @override
-  State<CheckData> createState() => CheckDataState();
-}
-
-class CheckDataState extends State<CheckData> {
-  String? mail;
-  bool isFirstLaunch = true;
-
-  @override
-  void initState() {
-    super.initState();
-    getPrefItems();
-  }
-
-  Future<void> getPrefItems() async {
+  Future<Map<String, dynamic>> getPrefItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      mail = prefs.getString('mail');
-      isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
-    });
+    return {
+      "mail": prefs.getString('mail'),
+      "isFirstLaunch": prefs.getBool('isFirstLaunch') ?? true,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
-    return isFirstLaunch
-        ? FirstView()
-        : (mail != null ? custom_root.RootWidget(usermail: mail!) : UserLogin());
+    return FutureBuilder<Map<String, dynamic>>(
+      future: getPrefItems(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final mail = snapshot.data?["mail"];
+        final isFirstLaunch = snapshot.data?["isFirstLaunch"] ?? true;
+
+        return isFirstLaunch
+            ? FirstView()
+            : (mail != null ? custom_root.RootWidget(usermail: mail) : UserLogin());
+      },
+    );
   }
 }
