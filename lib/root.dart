@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RootWidget extends StatefulWidget {
-  final String usermail;
-  const RootWidget({Key? key, required this.usermail}) : super(key: key);
+  final String userMail;
+  const RootWidget(this.userMail, {super.key});
 
   @override
   RootWidgetState createState() => RootWidgetState();
@@ -75,7 +75,7 @@ class RootWidgetState extends State<RootWidget> {
   }
 
   void setRoute() {
-    routes = [Home(), Chatroom(), Account()];
+    routes = [Home(), const Chatroom(), const Account()];
   }
 
   void onItemTapped(int index) {

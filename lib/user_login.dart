@@ -90,7 +90,7 @@ class _UserLogin extends State<UserLogin> {
                           await saveData(loginResult.user!.email!);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => custom_root.RootWidget(usermail: usermail),
+                              builder: (context) => custom_root.RootWidget(usermail),
                             ),
                           );
                         } else {

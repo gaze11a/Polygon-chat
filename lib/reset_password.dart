@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'main.dart';
+
 class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
+
   @override
-  _ResetPassword createState() => _ResetPassword();
+  ResetPasswordPage createState() => ResetPasswordPage();
 }
 
-class _ResetPassword extends State<ResetPassword> {
+class ResetPasswordPage extends State<ResetPassword> {
   String userMail = '';
   String text = "";
   bool isLoading = false;
@@ -18,7 +22,7 @@ class _ResetPassword extends State<ResetPassword> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           "パスワード再設定",
           style: TextStyle(
               color: Color.fromRGBO(90, 200, 250, 1.0),
@@ -26,7 +30,7 @@ class _ResetPassword extends State<ResetPassword> {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         automaticallyImplyLeading: false,
@@ -45,19 +49,19 @@ class _ResetPassword extends State<ResetPassword> {
                         width: 150,
                         child: Image.asset('assets/logo.png')),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
                     child: Text(
                       'ポリゴンチャット',
                       style: TextStyle(fontFamily: 'pupupu', fontSize: 30),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
+                  const Padding(
+                    padding: EdgeInsets.all(15.0),
                     child: Text("登録しているメールアドレスに\n再設定用のリンクを送信いたします。"),
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: "メールアドレス"),
+                    decoration: const InputDecoration(labelText: "メールアドレス"),
                     onChanged: (String value) {
                       setState(() {
                         userMail = value;
@@ -67,15 +71,9 @@ class _ResetPassword extends State<ResetPassword> {
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: ElevatedButton(
-                      child: Text(
-                        '送信',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                        ),
-                      ),
+
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(100, 205, 250, 1.0),
+                        backgroundColor: const Color.fromRGBO(100, 205, 250, 1.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -84,7 +82,7 @@ class _ResetPassword extends State<ResetPassword> {
                         try {
                           final FirebaseAuth auth = FirebaseAuth.instance;
                           await auth.sendPasswordResetEmail(email: userMail);
-                          Navigator.pop(context);
+                          Navigator.pop(navigatorKey.currentContext!);
                         } catch (error) {
                           String errorMessage = "メール送信に失敗しました。";
                           if (error is FirebaseAuthException) {
@@ -95,13 +93,13 @@ class _ResetPassword extends State<ResetPassword> {
                             }
                           }
                           showDialog(
-                            context: context,
+                            context: navigatorKey.currentContext!,
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text(errorMessage),
                                 actions: <Widget>[
                                   TextButton(
-                                    child: Text('戻る'),
+                                    child: const Text('戻る'),
                                     onPressed: () => Navigator.pop(context),
                                   ),
                                 ],
@@ -110,6 +108,13 @@ class _ResetPassword extends State<ResetPassword> {
                           );
                         }
                       },
+                      child: const Text(
+                        '送信',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   )
                 ],

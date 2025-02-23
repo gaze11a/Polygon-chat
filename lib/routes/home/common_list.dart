@@ -4,20 +4,24 @@ import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
 
 class CommonList extends StatelessWidget {
+  const CommonList({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: CommonListPage(),
     );
   }
 }
 
 class CommonListPage extends StatefulWidget {
+  const CommonListPage({super.key});
+
   @override
-  _CommonListPageState createState() => _CommonListPageState();
+  CommonListPageState createState() => CommonListPageState();
 }
 
-class _CommonListPageState extends State<CommonListPage> {
+class CommonListPageState extends State<CommonListPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

@@ -40,9 +40,9 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      drawer: PolygonDrawer(),
+      drawer: const PolygonDrawer(),
       appBar: buildAppBar(),
-      body: _isSearching ? buildSearchResults() : CommonList(), // タブの代わりに CommonList を表示
+      body: _isSearching ? buildSearchResults() : const CommonList(), // タブの代わりに CommonList を表示
     );
   }
 
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           .collection('user')
           .orderBy('title')
           .startAt([input])
-          .endAt([input + '\\uf8ff'])
+          .endAt(['$input\\uf8ff'])
           .limit(20)
           .snapshots(),
       builder: (context, snapshot) {

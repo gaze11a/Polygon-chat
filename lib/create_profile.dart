@@ -5,11 +5,13 @@ import 'package:polygon/routes/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
 
+import 'main.dart';
+
 class CreateProfile extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  String userimage = '';
+  String userImage = '';
 
-  CreateProfile({Key? key}) : super(key: key);
+  CreateProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class CreateProfile extends StatelessWidget {
               ),
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(Icons.close, color: Colors.black),
+                icon: const Icon(Icons.close, color: Colors.black),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               automaticallyImplyLeading: false,
@@ -44,15 +46,14 @@ class CreateProfile extends StatelessWidget {
                       height: 150,
                       child: InkWell(
                         onTap: () async {
-                          userimage =
-                          await model.setImage(model.userName + 'image');
+                          userImage =
+                          await model.setImage('${model.userName} + image');
                         },
-                        child: userimage.isEmpty
+                        child: userImage.isEmpty
                             ? Container(
-                            child: Icon(Icons.collections),
                             width: 130.0,
                             height: 130.0,
-                            margin: EdgeInsets.all(8.0),
+                            margin: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Colors.white, width: 7),
@@ -60,29 +61,31 @@ class CreateProfile extends StatelessWidget {
                                 image: DecorationImage(
                                     fit: BoxFit.fill,
                                     image:
-                                    AssetImage('assets/preimage.JPG'),
+                                    const AssetImage('assets/preimage.JPG'),
                                     colorFilter: ColorFilter.mode(
                                         Colors.black.withAlpha(153),
-                                        BlendMode.dstATop))))
+                                        BlendMode.dstATop))),
+                            child: const Icon(Icons.collections))
                             : Container(
-                            child: Icon(Icons.collections),
+
                             width: 130.0,
                             height: 130.0,
-                            margin: EdgeInsets.all(8.0),
+                            margin: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
                                 border: Border.all(
                                     color: Colors.white, width: 7),
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: NetworkImage(userimage),
+                                    image: NetworkImage(userImage),
                                     colorFilter: ColorFilter.mode(
                                         Colors.black.withAlpha(153),
-                                        BlendMode.dstATop)))),
+                                        BlendMode.dstATop))),
+                          child: const Icon(Icons.collections),),
                       ),
                     ),
-                    Text('ユーザーアイコン'),
-                    Divider(
+                    const Text('ユーザーアイコン'),
+                    const Divider(
                       height: 20.0,
                       thickness: 2.0,
                     ),
@@ -92,15 +95,9 @@ class CreateProfile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ElevatedButton(
-                        child: Text(
-                          'プロフィール登録',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
+
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(100, 205, 250, 1.0),
+                          backgroundColor: const Color.fromRGBO(100, 205, 250, 1.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -130,7 +127,7 @@ class CreateProfile extends StatelessWidget {
                                     .set(
                                   {
                                     'title': model.userName,
-                                    'imageURL': userimage,
+                                    'imageURL': userImage,
                                     'headerURL': '',
                                     'comment': '',
                                     'hobby': '',
@@ -147,13 +144,13 @@ class CreateProfile extends StatelessWidget {
 
                               model.endLoading();
                               showDialog(
-                                context: context,
+                                context: navigatorKey.currentContext!,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('送信されたリンクからメールアドレスを確認してください。'),
+                                    title: const Text('送信されたリンクからメールアドレスを確認してください。'),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text('次へ'),
+                                        child: const Text('次へ'),
                                         onPressed: () async {
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
@@ -168,13 +165,20 @@ class CreateProfile extends StatelessWidget {
                               );
                             } else {
                               model.endLoading();
-                              model.dialog(context, "そのユーザー名は既に登録されています。");
+                              model.dialog(navigatorKey.currentContext!, "そのユーザー名は既に登録されています。");
                             }
                           } catch (e) {
                             model.endLoading();
-                            model.dialog(context, "エラーが発生しました: ${e.toString()}");
+                            model.dialog(navigatorKey.currentContext!, "エラーが発生しました: ${e.toString()}");
                           }
                         },
+                        child: const Text(
+                          'プロフィール登録',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ]),

@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'chat.dart';
 
 class Chatroom extends StatelessWidget {
+  const Chatroom({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -14,7 +16,7 @@ class Chatroom extends StatelessWidget {
 }
 
 class ChatroomPage extends StatefulWidget {
-  const ChatroomPage({Key? key}) : super(key: key);
+  const ChatroomPage({super.key});
 
   @override
   _ChatroomPageState createState() => _ChatroomPageState();
@@ -130,13 +132,13 @@ class Tile extends StatelessWidget {
   final String lastMessage;
 
   const Tile({
-    Key? key,
+    super.key,
     required this.roomMember,
     required this.name,
     required this.block,
     required this.blockuser,
     required this.lastMessage,
-  }) : super(key: key);
+  });
 
   String compString(String a, String b) {
     return (a.compareTo(b) > 0) ? '$b$a' : '$a$b';
@@ -167,8 +169,8 @@ class Tile extends StatelessWidget {
         }
 
         return Slidable(
-          startActionPane: ActionPane(
-            motion: const DrawerMotion(),
+          startActionPane: const ActionPane(
+            motion: DrawerMotion(),
             children: [],
           ),
           child: Container(

@@ -18,7 +18,7 @@ class ImageCircle extends StatelessWidget {
           fit: BoxFit.fill,
           image: userimage.isNotEmpty
               ? NetworkImage(userimage) as ImageProvider<Object> // ✅ Fix type issue
-              : AssetImage('assets/preimage.JPG') as ImageProvider<Object>,
+              : const AssetImage('assets/preimage.JPG') as ImageProvider<Object>,
         ),
       ),
     );

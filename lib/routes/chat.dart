@@ -12,13 +12,13 @@ class Chat extends StatefulWidget {
   List<String> blockuser;
 
   Chat({
-    Key? key,
+    super.key,
     required this.opponent,
     required this.room,
     required this.chatcompUrl,
     this.block = false,
     this.blockuser = const [],
-  }) : super(key: key);
+  });
 
   @override
   ChatState createState() => ChatState();
@@ -55,16 +55,16 @@ class ChatState extends State<Chat> {
         .get();
 
     if (querySnapshot.docs.isEmpty) {
-      print("Firestore: 初回メッセージを送信");
+      debugPrint("Firestore: 初回メッセージを送信");
       await addMessageToFirebase('system', "チャットが開始されました。");
     } else {
-      print("Firestore: 既にメッセージが存在するため送信しません");
+      debugPrint("Firestore: 既にメッセージが存在するため送信しません");
     }
   }
 
   Future<void> addMessageToFirebase(String type, String content) async {
     if (content.isNotEmpty) {
-      print("Firestore へのメッセージ送信開始: $content");
+      debugPrint("Firestore へのメッセージ送信開始: $content");
 
       try {
         await FirebaseFirestore.instance
@@ -83,12 +83,12 @@ class ChatState extends State<Chat> {
           'lastMessage': content,
         });
 
-        print("Firestore へのメッセージ送信成功");
+        debugPrint("Firestore へのメッセージ送信成功");
       } catch (e) {
-        print("Firestore へのメッセージ送信エラー: $e");
+        debugPrint("Firestore へのメッセージ送信エラー: $e");
       }
     } else {
-      print("メッセージが空のため送信しませんでした");
+      debugPrint("メッセージが空のため送信しませんでした");
     }
   }
 

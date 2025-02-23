@@ -9,7 +9,7 @@ class HomeTile extends StatelessWidget {
   final String imageURL;
   final String commentText;
 
-  HomeTile(this.title, this.imageURL, this.commentText);
+  const HomeTile(this.title, this.imageURL, this.commentText, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class HomeTile extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 2),
               color: Colors.white,
-              image: DecorationImage(
+              image: const DecorationImage(
                 image: AssetImage('assets/polygon.jpg'),
                 fit: BoxFit.fill,
               ),
               borderRadius: BorderRadius.circular(8.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                     color: Colors.black26,
                     spreadRadius: 1.0,
@@ -60,10 +60,10 @@ class HomeTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         height: 30,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0, 0, 0, 0.1),
+          color: const Color.fromRGBO(0, 0, 0, 0.1),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Row(
@@ -73,7 +73,7 @@ class HomeTile extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 item,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 13,
                 ),
@@ -92,11 +92,11 @@ class HomeTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         height: 30,
         width: itemWidth,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0, 0, 0, 0.1),
+          color: const Color.fromRGBO(0, 0, 0, 0.1),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Row(
@@ -107,7 +107,7 @@ class HomeTile extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   item,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 13,
                   ),

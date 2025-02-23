@@ -64,8 +64,8 @@ class CheckData extends StatelessWidget {
         final isFirstLaunch = snapshot.data?["isFirstLaunch"] ?? true;
 
         return isFirstLaunch
-            ? FirstView()
-            : (mail != null ? custom_root.RootWidget(usermail: mail) : UserLogin());
+            ? const FirstView()
+            : (mail != null ? custom_root.RootWidget(mail) : UserLogin());
       },
     );
   }

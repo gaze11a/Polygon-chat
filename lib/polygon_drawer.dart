@@ -5,18 +5,23 @@ import 'package:polygon/user_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'main.dart';
+
 class PolygonDrawer extends StatelessWidget {
   const PolygonDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       width: size.width / 1.5,
       child: Drawer(
         child: ListView(
           children: <Widget>[
             const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(100, 205, 250, 1.0),
+              ),
               child: Text(
                 "ポリゴンチャット",
                 style: TextStyle(
@@ -24,9 +29,6 @@ class PolygonDrawer extends StatelessWidget {
                   color: Colors.white,
                   fontFamily: 'pupupu',
                 ),
-              ),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(100, 205, 250, 1.0),
               ),
             ),
             ListTile(
@@ -36,7 +38,7 @@ class PolygonDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Setting(),
+                    builder: (context) => const Setting(),
                   ),
                 );
               },
@@ -86,15 +88,15 @@ class PolygonDrawer extends StatelessWidget {
                                     .update({
                                   'fcmtoken': FieldValue.arrayRemove([token])
                                 });
-                                print("[DEBUG] Token removed from Firestore.");
+                                debugPrint("[DEBUG] Token removed from Firestore.");
                               }
                             } catch (e) {
-                              print("[ERROR] Failed to remove token: $e");
+                              debugPrint("[ERROR] Failed to remove token: $e");
                             }
 
                             // 🔹 SharedPreferences をクリア
                             await prefs.clear();
-                            print("[DEBUG] SharedPreferences cleared.");
+                            debugPrint("[DEBUG] SharedPreferences cleared.");
 
                             // 🔹 必要な設定値を復元
                             await prefs.setBool('isFirstLaunch', false);
@@ -103,7 +105,7 @@ class PolygonDrawer extends StatelessWidget {
 
                             // 🔹 確実に画面を遷移するため `Future.delayed` を使用
                             Future.delayed(Duration.zero, () {
-                              Navigator.of(context).pushAndRemoveUntil(
+                              Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) => UserLogin()),
                                     (route) => false,
                               );
@@ -123,7 +125,7 @@ class PolygonDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Contact(),
+                    builder: (context) => const Contact(),
                   ),
                 );
               },
