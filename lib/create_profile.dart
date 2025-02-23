@@ -21,7 +21,7 @@ class CreateProfile extends StatelessWidget {
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
               backgroundColor: Colors.white,
-              title: Text(
+              title: const Text(
                 "新規登録",
                 style: TextStyle(
                     color: Color.fromRGBO(90, 200, 250, 1.0),
