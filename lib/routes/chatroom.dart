@@ -192,8 +192,8 @@ class Tile extends StatelessWidget {
                       opponent: chatCompName,
                       room: compString(name, chatCompName),
                       block: block,
-                      blockuser: blockUser,
-                      chatcompUrl: snapshot.data!,
+                      blockUser: blockUser,
+                      chatCompUrl: snapshot.data!,
                     ),
                   ),
                 );

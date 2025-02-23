@@ -34,23 +34,30 @@ class UserDetailPage extends StatefulWidget {
 
   @override
   UserDetailPageState createState() =>
-      UserDetailPageState(title, imageURL, headerURL, comment);
+      UserDetailPageState();
 }
 
 class UserDetailPageState extends State<UserDetailPage> {
-  final String title;
-  final String imageURL;
-  final String headerURL;
-  final String comment;
+  late final String title;
+  late final String imageURL;
+  late final String headerURL;
+  late final String comment;
 
-  UserDetailPageState(this.title, this.imageURL, this.headerURL, this.comment);
+  @override
+  void initState() {
+    super.initState();
+    title = widget.title;
+    imageURL = widget.imageURL;
+    headerURL = widget.headerURL;
+    comment = widget.comment;
+  }
 
   String username = '';
-  String usermail = '';
-  String userimage = '';
-  String roomname = '';
+  String userMail = '';
+  String userImage = '';
+  String roomName = '';
   bool block = false;
-  List<String> blockuser = [];
+  List<String> blockUser = [];
 
   bool chat = false;
 
@@ -63,8 +70,8 @@ class UserDetailPageState extends State<UserDetailPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       username = prefs.getString('name') ?? '';
-      usermail = prefs.getString('mail') ?? '';
-      userimage = prefs.getString('image') ?? '';
+      userMail = prefs.getString('mail') ?? '';
+      userImage = prefs.getString('image') ?? '';
       chat = username != title;
     });
   }
@@ -75,27 +82,27 @@ class UserDetailPageState extends State<UserDetailPage> {
       return;
     }
 
-    roomname = compString(username, title);
-    debugPrint("生成された roomname: $roomname");
+    roomName = compString(username, title);
+    debugPrint("生成された room name: $roomName");
 
     try {
       final stopwatch = Stopwatch()..start();
       DocumentSnapshot docSnapshot =
-      await FirebaseFirestore.instance.collection('room').doc(roomname).get();
+      await FirebaseFirestore.instance.collection('room').doc(roomName).get();
       stopwatch.stop();
       debugPrint("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
 
       if (!docSnapshot.exists) {
-        debugPrint("チャットルームを作成します: $roomname");
-        await FirebaseFirestore.instance.collection('room').doc(roomname).set({
+        debugPrint("チャットルームを作成します: $roomName");
+        await FirebaseFirestore.instance.collection('room').doc(roomName).set({
           'member': [username, title],
           'block': false,
           'blockuser': [],
         });
         block = false;
-        blockuser = [];
+        blockUser = [];
       } else {
-        debugPrint("既存のチャットルームを取得: $roomname");
+        debugPrint("既存のチャットルームを取得: $roomName");
         final data = docSnapshot.data() as Map<String, dynamic>?;
 
         if (data == null) {
@@ -104,8 +111,8 @@ class UserDetailPageState extends State<UserDetailPage> {
         }
 
         block = data['block'] ?? false;
-        blockuser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
-        debugPrint("取得したデータ - block: $block, blockuser: $blockuser");
+        blockUser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
+        debugPrint("取得したデータ - block: $block, blockuser: $blockUser");
       }
 
       debugPrint("Firestore からのデータ取得完了");
@@ -169,9 +176,9 @@ class UserDetailPageState extends State<UserDetailPage> {
             builder: (context) => Chat(
               opponent: title,
               room: compString(username, title),
-              chatcompUrl: imageURL,
+              chatCompUrl: imageURL,
               block: block,
-              blockuser: blockuser,
+              blockUser: blockUser,
             ),
           ),
         );

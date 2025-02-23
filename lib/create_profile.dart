@@ -7,11 +7,16 @@ import 'package:polygon/model.dart';
 
 import 'main.dart';
 
-class CreateProfile extends StatelessWidget {
+class CreateProfile extends StatefulWidget {
+  const CreateProfile({super.key});
+
+  @override
+  CreateProfileState createState() => CreateProfileState();
+}
+
+class CreateProfileState extends State<CreateProfile> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String userImage = '';
-
-  CreateProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,42 +51,49 @@ class CreateProfile extends StatelessWidget {
                       height: 150,
                       child: InkWell(
                         onTap: () async {
-                          userImage =
+                          String newImage =
                           await model.setImage('${model.userName} + image');
+                          setState(() {
+                            userImage = newImage;
+                          });
                         },
                         child: userImage.isEmpty
                             ? Container(
-                            width: 130.0,
-                            height: 130.0,
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.white, width: 7),
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image:
-                                    const AssetImage('assets/preimage.JPG'),
-                                    colorFilter: ColorFilter.mode(
-                                        Colors.black.withAlpha(153),
-                                        BlendMode.dstATop))),
-                            child: const Icon(Icons.collections))
+                          width: 130.0,
+                          height: 130.0,
+                          margin: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 7),
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: const AssetImage('assets/preimage.JPG'),
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withAlpha(153),
+                                BlendMode.dstATop,
+                              ),
+                            ),
+                          ),
+                          child: const Icon(Icons.collections),
+                        )
                             : Container(
-
-                            width: 130.0,
-                            height: 130.0,
-                            margin: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.white, width: 7),
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(userImage),
-                                    colorFilter: ColorFilter.mode(
-                                        Colors.black.withAlpha(153),
-                                        BlendMode.dstATop))),
-                          child: const Icon(Icons.collections),),
+                          width: 130.0,
+                          height: 130.0,
+                          margin: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 7),
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(userImage),
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withAlpha(153),
+                                BlendMode.dstATop,
+                              ),
+                            ),
+                          ),
+                          child: const Icon(Icons.collections),
+                        ),
                       ),
                     ),
                     const Text('ユーザーアイコン'),
@@ -95,7 +107,6 @@ class CreateProfile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ElevatedButton(
-
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromRGBO(100, 205, 250, 1.0),
                           shape: RoundedRectangleBorder(
@@ -165,11 +176,15 @@ class CreateProfile extends StatelessWidget {
                               );
                             } else {
                               model.endLoading();
-                              model.dialog(navigatorKey.currentContext!, "そのユーザー名は既に登録されています。");
+                              model.dialog(
+                                  navigatorKey.currentContext!,
+                                  "そのユーザー名は既に登録されています。");
                             }
                           } catch (e) {
                             model.endLoading();
-                            model.dialog(navigatorKey.currentContext!, "エラーが発生しました: ${e.toString()}");
+                            model.dialog(
+                                navigatorKey.currentContext!,
+                                "エラーが発生しました: ${e.toString()}");
                           }
                         },
                         child: const Text(

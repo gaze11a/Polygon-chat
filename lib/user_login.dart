@@ -13,10 +13,10 @@ class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
 
   @override
-  _UserLogin createState() => _UserLogin();
+  UserLoginState createState() => UserLoginState();
 }
 
-class _UserLogin extends State<UserLogin> {
+class UserLoginState extends State<UserLogin> {
   String userMail = '';
   String userPassword = '';
   String infoText = "";
@@ -125,7 +125,7 @@ class _UserLogin extends State<UserLogin> {
                               SharedPreferences prefs = await SharedPreferences.getInstance();
                               prefs.setBool('isFirstChoice', true);
                               Navigator.of(navigatorKey.currentContext!).push(MaterialPageRoute(
-                                builder: (context) => CreateProfile(),
+                                builder: (context) => const CreateProfile(),
                               ));
                             },
                         ),

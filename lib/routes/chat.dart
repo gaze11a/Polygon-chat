@@ -7,17 +7,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Chat extends StatefulWidget {
   final String opponent;
   final String room;
-  final String chatcompUrl;
-  bool block;
-  List<String> blockuser;
+  final String chatCompUrl;
+  final bool block;
+  final List<String> blockUser;
 
-  Chat({
+  const Chat({
     super.key,
     required this.opponent,
     required this.room,
-    required this.chatcompUrl,
+    required this.chatCompUrl,
     this.block = false,
-    this.blockuser = const [],
+    this.blockUser = const [],
   });
 
   @override
