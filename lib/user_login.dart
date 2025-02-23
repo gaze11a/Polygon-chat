@@ -7,14 +7,18 @@ import 'package:polygon/root.dart' as custom_root;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/gestures.dart';
 
+import 'main.dart';
+
 class UserLogin extends StatefulWidget {
+  const UserLogin({super.key});
+
   @override
   _UserLogin createState() => _UserLogin();
 }
 
 class _UserLogin extends State<UserLogin> {
-  String usermail = '';
-  String userpassword = '';
+  String userMail = '';
+  String userPassword = '';
   String infoText = "";
   bool isLoading = false;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -63,7 +67,7 @@ class _UserLogin extends State<UserLogin> {
                   decoration: const InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     setState(() {
-                      usermail = value;
+                      userMail = value;
                     });
                   },
                 ),
@@ -72,7 +76,7 @@ class _UserLogin extends State<UserLogin> {
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
-                      userpassword = value;
+                      userPassword = value;
                     });
                   },
                 ),
@@ -83,14 +87,14 @@ class _UserLogin extends State<UserLogin> {
                     onPressed: () async {
                       try {
                         final loginResult = await auth.signInWithEmailAndPassword(
-                          email: usermail,
-                          password: userpassword,
+                          email: userMail,
+                          password: userPassword,
                         );
                         if (loginResult.user?.emailVerified == true) {
                           await saveData(loginResult.user!.email!);
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(navigatorKey.currentContext!).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => custom_root.RootWidget(usermail),
+                              builder: (context) => custom_root.RootWidget(userMail),
                             ),
                           );
                         } else {
@@ -120,7 +124,7 @@ class _UserLogin extends State<UserLogin> {
                             ..onTap = () async {
                               SharedPreferences prefs = await SharedPreferences.getInstance();
                               prefs.setBool('isFirstChoice', true);
-                              Navigator.of(context).push(MaterialPageRoute(
+                              Navigator.of(navigatorKey.currentContext!).push(MaterialPageRoute(
                                 builder: (context) => CreateProfile(),
                               ));
                             },
@@ -142,7 +146,7 @@ class _UserLogin extends State<UserLogin> {
                           recognizer: TapGestureRecognizer()
                             ..onTap = () async {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ResetPassword(),
+                                builder: (context) => const ResetPassword(),
                               ));
                             },
                         ),

@@ -106,7 +106,7 @@ class BubbleClipper extends CustomClipper<Path> {
 }
 
 class Bubble extends StatelessWidget {
-  const Bubble({
+  const Bubble({super.key,
     required this.child,
     this.radius = const Radius.circular(6.0),
     this.nip = BubbleNip.no,

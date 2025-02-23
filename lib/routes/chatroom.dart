@@ -19,22 +19,20 @@ class ChatroomPage extends StatefulWidget {
   const ChatroomPage({super.key});
 
   @override
-  _ChatroomPageState createState() => _ChatroomPageState();
+  ChatroomPageState createState() => ChatroomPageState();
 }
 
-class _ChatroomPageState extends State<ChatroomPage> {
+class ChatroomPageState extends State<ChatroomPage> {
   String username = '';
-  String usermail = '';
-  String userimage = '';
-  bool showpaira = false;
+  String userMail = '';
+  String userImage = '';
 
   Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       username = prefs.getString('name') ?? '';
-      usermail = prefs.getString('mail') ?? '';
-      userimage = prefs.getString('image') ?? '';
-      showpaira = prefs.getBool('showpaira') ?? false;
+      userMail = prefs.getString('mail') ?? '';
+      userImage = prefs.getString('image') ?? '';
     });
   }
 
@@ -108,7 +106,7 @@ class _ChatroomPageState extends State<ChatroomPage> {
                       child: Tile(
                         roomMember: List<String>.from(data['member']),
                         block: data['block'] ?? false,
-                        blockuser: List<String>.from(data['blockuser'] ?? []),
+                        blockUser: List<String>.from(data['blockuser'] ?? []),
                         name: username,
                         lastMessage: data['lastMessage'] ?? '',
                       ),
@@ -127,7 +125,7 @@ class _ChatroomPageState extends State<ChatroomPage> {
 class Tile extends StatelessWidget {
   final List<String> roomMember;
   final bool block;
-  final List<String> blockuser;
+  final List<String> blockUser;
   final String name;
   final String lastMessage;
 
@@ -136,7 +134,7 @@ class Tile extends StatelessWidget {
     required this.roomMember,
     required this.name,
     required this.block,
-    required this.blockuser,
+    required this.blockUser,
     required this.lastMessage,
   });
 
@@ -194,7 +192,7 @@ class Tile extends StatelessWidget {
                       opponent: chatCompName,
                       room: compString(name, chatCompName),
                       block: block,
-                      blockuser: blockuser,
+                      blockuser: blockUser,
                       chatcompUrl: snapshot.data!,
                     ),
                   ),

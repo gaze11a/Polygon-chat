@@ -4,13 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polygon/routes/chat.dart';
 
+import '../../../main.dart';
+
 class UserDetail extends StatelessWidget {
   final String title;
   final String imageURL;
   final String headerURL;
   final String comment;
 
-  UserDetail(this.title, this.imageURL, this.headerURL, this.comment);
+  const UserDetail(this.title, this.imageURL, this.headerURL, this.comment, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,20 +30,20 @@ class UserDetailPage extends StatefulWidget {
   final String headerURL;
   final String comment;
 
-  UserDetailPage(this.title, this.imageURL, this.headerURL, this.comment);
+  const UserDetailPage(this.title, this.imageURL, this.headerURL, this.comment, {super.key});
 
   @override
-  _UserDetailPageState createState() =>
-      _UserDetailPageState(title, imageURL, headerURL, comment);
+  UserDetailPageState createState() =>
+      UserDetailPageState(title, imageURL, headerURL, comment);
 }
 
-class _UserDetailPageState extends State<UserDetailPage> {
+class UserDetailPageState extends State<UserDetailPage> {
   final String title;
   final String imageURL;
   final String headerURL;
   final String comment;
 
-  _UserDetailPageState(this.title, this.imageURL, this.headerURL, this.comment);
+  UserDetailPageState(this.title, this.imageURL, this.headerURL, this.comment);
 
   String username = '';
   String usermail = '';
@@ -53,7 +55,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
   bool chat = false;
 
   // Function to generate a unique room name
-  String compstring(String a, String b) {
+  String compString(String a, String b) {
     return (a.compareTo(b) > 0) ? (b + a) : (a + b);
   }
 
@@ -69,22 +71,22 @@ class _UserDetailPageState extends State<UserDetailPage> {
 
   Future<void> makeChat() async {
     if (username.isEmpty) {
-      print("username が取得できていません。処理を中断します。");
+      debugPrint("username が取得できていません。処理を中断します。");
       return;
     }
 
-    roomname = compstring(username, title);
-    print("生成された roomname: $roomname");
+    roomname = compString(username, title);
+    debugPrint("生成された roomname: $roomname");
 
     try {
       final stopwatch = Stopwatch()..start();
       DocumentSnapshot docSnapshot =
       await FirebaseFirestore.instance.collection('room').doc(roomname).get();
       stopwatch.stop();
-      print("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
+      debugPrint("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
 
       if (!docSnapshot.exists) {
-        print("チャットルームを作成します: $roomname");
+        debugPrint("チャットルームを作成します: $roomname");
         await FirebaseFirestore.instance.collection('room').doc(roomname).set({
           'member': [username, title],
           'block': false,
@@ -93,22 +95,22 @@ class _UserDetailPageState extends State<UserDetailPage> {
         block = false;
         blockuser = [];
       } else {
-        print("既存のチャットルームを取得: $roomname");
+        debugPrint("既存のチャットルームを取得: $roomname");
         final data = docSnapshot.data() as Map<String, dynamic>?;
 
         if (data == null) {
-          print("Firestore のデータが null です。処理を中断します。");
+          debugPrint("Firestore のデータが null です。処理を中断します。");
           return;
         }
 
         block = data['block'] ?? false;
         blockuser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
-        print("取得したデータ - block: $block, blockuser: $blockuser");
+        debugPrint("取得したデータ - block: $block, blockuser: $blockuser");
       }
 
-      print("Firestore からのデータ取得完了");
+      debugPrint("Firestore からのデータ取得完了");
     } catch (e) {
-      print("Firestore でエラーが発生: $e");
+      debugPrint("Firestore でエラーが発生: $e");
       return;
     }
   }
@@ -118,12 +120,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
     getData();
 
     return Hero(
-      tag: 'list' + title,
+      tag: 'list$title',
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.close, color: Colors.white),
+            icon: const Icon(Icons.close, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
           backgroundColor: Colors.transparent,
@@ -134,46 +136,46 @@ class _UserDetailPageState extends State<UserDetailPage> {
           children: [
             UserHeader(userheader: headerURL, userimage: imageURL),
             //comment.isNotEmpty ? UserNameComment(title, comment) : UserName(title),
-            chat ? talkbutton(context) : Container(),
+            chat ? talkButton(context) : Container(),
           ],
         ),
       ),
     );
   }
 
-  Widget talkbutton(BuildContext context) {
+  Widget talkButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 7.0,
-        shape: StadiumBorder(),
+        shape: const StadiumBorder(),
         backgroundColor: Colors.green,
       ),
-      child: Text('二人だけで会話',
+      child: const Text('二人だけで会話',
           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
       onPressed: () async {
-        print("ボタンが押されました");
+        debugPrint("ボタンが押されました");
 
         await makeChat(); // ここで完全にデータ取得を待つ
-        print("makeChat() の処理完了");
+        debugPrint("makeChat() の処理完了");
 
         if (!mounted) {
-          print("コンテキストが失われています。画面遷移をスキップ");
+          debugPrint("コンテキストが失われています。画面遷移をスキップ");
           return;
         }
 
-        print("Chat画面に遷移します");
-        Navigator.of(context).pushReplacement(
+        debugPrint("Chat画面に遷移します");
+        Navigator.of(navigatorKey.currentContext!).pushReplacement(
           MaterialPageRoute(
             builder: (context) => Chat(
               opponent: title,
-              room: compstring(username, title),
+              room: compString(username, title),
               chatcompUrl: imageURL,
               block: block,
               blockuser: blockuser,
             ),
           ),
         );
-        print("画面遷移完了");
+        debugPrint("画面遷移完了");
       },
     );
   }

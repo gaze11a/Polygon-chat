@@ -65,7 +65,7 @@ class CheckData extends StatelessWidget {
 
         return isFirstLaunch
             ? const FirstView()
-            : (mail != null ? custom_root.RootWidget(mail) : UserLogin());
+            : (mail != null ? custom_root.RootWidget(mail) : const UserLogin());
       },
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class TitleText extends StatelessWidget {
-  TitleText(this.title);
+  TitleText(this.title, {super.key});
   String title;
 
   @override
@@ -10,12 +10,12 @@ class TitleText extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       height: 40,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color.fromRGBO(255, 255, 255, 0.5),
       ),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontSize: 18,
         ),

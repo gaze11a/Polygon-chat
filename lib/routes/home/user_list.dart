@@ -4,7 +4,7 @@ import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
 
 class UserList extends StatelessWidget {
-  const UserList({Key? key}) : super(key: key);
+  const UserList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +15,13 @@ class UserList extends StatelessWidget {
 }
 
 class UserListPage extends StatefulWidget {
-  const UserListPage({Key? key}) : super(key: key);
+  const UserListPage({super.key});
 
   @override
-  _UserListPageState createState() => _UserListPageState();
+  UserListPageState createState() => UserListPageState();
 }
 
-class _UserListPageState extends State<UserListPage> {
+class UserListPageState extends State<UserListPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

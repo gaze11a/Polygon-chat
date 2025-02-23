@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 //名前とひとこと
 
 class UserNameComment extends StatelessWidget {
-  UserNameComment(this.title, this.comment);
+  const UserNameComment(this.title, this.comment, {super.key});
   final String title;
   final String comment;
 
@@ -13,7 +12,7 @@ class UserNameComment extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.only(top: 5),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color.fromRGBO(255, 255, 255, 0.5),
           ),
           child: Column(
@@ -28,11 +27,11 @@ class UserNameComment extends StatelessWidget {
   Widget titleText(String title) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0),
       height: 45,
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontSize: 25,
           fontWeight: FontWeight.bold,
@@ -44,11 +43,11 @@ class UserNameComment extends StatelessWidget {
   Widget commentText(String comment) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(bottom: 7.0),
+      padding: const EdgeInsets.only(bottom: 7.0),
       height: 35,
       child: Text(
         comment,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontSize: 16,
         ),

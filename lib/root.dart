@@ -75,7 +75,7 @@ class RootWidgetState extends State<RootWidget> {
   }
 
   void setRoute() {
-    routes = [Home(), const Chatroom(), const Account()];
+    routes = [const Home(), const Chatroom(), const Account()];
   }
 
   void onItemTapped(int index) {

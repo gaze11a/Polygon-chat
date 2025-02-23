@@ -154,7 +154,7 @@ class CreateProfile extends StatelessWidget {
                                         onPressed: () async {
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
-                                              builder: (context) => HomePage(),
+                                              builder: (context) => const HomePage(),
                                             ),
                                           );
                                         },

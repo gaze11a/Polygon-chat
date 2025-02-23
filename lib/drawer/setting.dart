@@ -127,7 +127,7 @@ class SettingPageState extends State<SettingPage> {
 
               // 🔹 削除完了後に `UserLogin()` に遷移
               Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => UserLogin()),
+                MaterialPageRoute(builder: (context) => const UserLogin()),
                 (route) => false,
               );
             },

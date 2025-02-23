@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UserImage extends StatelessWidget {
   final String userimage;
 
-  const UserImage({required this.userimage, Key? key}) : super(key: key);
+  const UserImage({required this.userimage, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -106,7 +106,7 @@ class PolygonDrawer extends StatelessWidget {
                             // 🔹 確実に画面を遷移するため `Future.delayed` を使用
                             Future.delayed(Duration.zero, () {
                               Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-                                MaterialPageRoute(builder: (context) => UserLogin()),
+                                MaterialPageRoute(builder: (context) => const UserLogin()),
                                     (route) => false,
                               );
                             });

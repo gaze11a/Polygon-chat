@@ -5,7 +5,7 @@ class UserHeader extends StatelessWidget {
   final String userheader;
   final String userimage;
 
-  const UserHeader({required this.userheader, required this.userimage, Key? key}) : super(key: key);
+  const UserHeader({required this.userheader, required this.userimage, super.key});
 
   @override
   Widget build(BuildContext context) {

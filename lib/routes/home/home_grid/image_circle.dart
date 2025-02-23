@@ -4,7 +4,7 @@ class ImageCircle extends StatelessWidget {
   final String userimage; // ✅ Make it final
 
   // ✅ Pass Key and initialize correctly
-  ImageCircle(this.userimage, {Key? key}) : super(key: key);
+  const ImageCircle(this.userimage, {super.key});
 
   @override
   Widget build(BuildContext context) {

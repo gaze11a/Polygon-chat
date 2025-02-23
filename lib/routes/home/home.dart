@@ -6,20 +6,24 @@ import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
 
 class Home extends StatelessWidget {
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   Widget appBarTitle = const Text(
     "ホーム",
     style: TextStyle(
