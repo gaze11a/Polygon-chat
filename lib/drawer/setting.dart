@@ -4,23 +4,28 @@ import 'package:polygon/drawer/privacy.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
 
+import '../main.dart';
 import '../user_login.dart';
 
 class Setting extends StatelessWidget {
+  const Setting({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SettingPage(),
     );
   }
 }
 
 class SettingPage extends StatefulWidget {
+  const SettingPage({super.key});
+
   @override
-  _SettingPageState createState() => _SettingPageState();
+  SettingPageState createState() => SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class SettingPageState extends State<SettingPage> {
   bool notification = false;
   String notificationText = '';
 
@@ -28,11 +33,11 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(68, 114, 196, 1.0),
-        title: Text("設定"),
+        backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
+        title: const Text("設定"),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -40,60 +45,61 @@ class _SettingPageState extends State<SettingPage> {
         children: <Widget>[
           GestureDetector(
             child: Container(
-              child: ListTile(
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.black)),
+              ),
+              child: const ListTile(
                 title: Text('利用規約'),
                 trailing: Icon(Icons.navigate_next),
-              ),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.black)),
               ),
             ),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ContractPage(),
+                  builder: (context) => const ContractPage(),
                 ),
               );
             },
           ),
           GestureDetector(
             child: Container(
-              child: ListTile(
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.black)),
+              ),
+              child: const ListTile(
                 title: Text('プライバシーポリシー'),
                 trailing: Icon(Icons.navigate_next),
-              ),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.black)),
               ),
             ),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PrivacyPage(),
+                  builder: (context) => const PrivacyPage(),
                 ),
               );
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // 🔹 アカウント削除オプション
           GestureDetector(
             child: Container(
-              child: ListTile(
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.red)),
+              ),
+              child: const ListTile(
                 title: Text(
                   'アカウント削除',
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 trailing: Icon(Icons.delete, color: Colors.red),
               ),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.red)),
-              ),
             ),
             onTap: () async {
-              print("[DEBUG] Delete button pressed!");
+              debugPrint("[DEBUG] Delete button pressed!");
 
               final model = Provider.of<Model>(context, listen: false);
 
@@ -101,27 +107,28 @@ class _SettingPageState extends State<SettingPage> {
               String? password = await model.showPasswordDialog(context);
 
               if (password == null || password.isEmpty) {
-                print("[DEBUG] Password input canceled.");
+                debugPrint("[DEBUG] Password input canceled.");
                 return; // 🔹 キャンセルしたら何もしない
               }
 
-              print("[DEBUG] Password entered.");
+              debugPrint("[DEBUG] Password entered.");
 
               // 🔹 次に削除確認ダイアログを表示
-              bool confirm = await model.dialog(context, "本当にアカウントを削除しますか？");
+              bool confirm = await model.dialog(
+                  navigatorKey.currentContext!, "本当にアカウントを削除しますか？");
 
               if (!confirm) {
-                print("[DEBUG] User canceled account deletion.");
+                debugPrint("[DEBUG] User canceled account deletion.");
                 return; // 🔹 キャンセルしたら何もしない
               }
 
-              print("[DEBUG] User confirmed deletion!");
-              await model.deleteAccount(context, password);
+              debugPrint("[DEBUG] User confirmed deletion!");
+              await model.deleteAccount(navigatorKey.currentContext!, password);
 
               // 🔹 削除完了後に `UserLogin()` に遷移
-              Navigator.of(context).pushAndRemoveUntil(
+              Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => UserLogin()),
-                    (route) => false,
+                (route) => false,
               );
             },
           ),

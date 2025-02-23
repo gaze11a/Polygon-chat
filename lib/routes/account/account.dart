@@ -8,41 +8,44 @@ import 'package:polygon/routes/home/user_detail/user_name.dart';
 import 'package:polygon/routes/home/user_detail/user_name_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../main.dart';
+
 class Account extends StatelessWidget {
+  const Account({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: AccountPage(),
     );
   }
 }
 
 class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
+
   @override
-  _AccountPageState createState() => _AccountPageState();
+  AccountPageState createState() => AccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class AccountPageState extends State<AccountPage> {
   late String username;
-  late String usermail;
-  late String userimage;
-  late String userheader;
+  late String userMail;
+  late String userImage;
+  late String userHeader;
   late String comment;
   late String hobby;
-  late List hobbylist;
 
   bool edit = false;
 
   Future getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     username = prefs.getString('name') ?? '';
-    usermail = prefs.getString('mail') ?? '';
-    userimage = prefs.getString('image') ?? '';
-    userheader = prefs.getString('header') ?? '';
+    userMail = prefs.getString('mail') ?? '';
+    userImage = prefs.getString('image') ?? '';
+    userHeader = prefs.getString('header') ?? '';
     comment = prefs.getString('comment') ?? '';
     hobby = prefs.getString('hobby') ?? '';
-    hobbylist = hobby.split(',');
-    if (hobbylist[0] == "") hobbylist.removeAt(0);
   }
 
   @override
@@ -56,150 +59,149 @@ class _AccountPageState extends State<AccountPage> {
           backgroundColor: Colors.white,
           elevation: 0,
           title: edit
-              ? Text(
-            "アカウントを編集",
-            style: TextStyle(color: Colors.black),
-          )
-              : Text(
-            "アカウント",
-            style: TextStyle(
-              color: Color.fromRGBO(100, 205, 250, 1.0),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+              ? const Text(
+                  "アカウントを編集",
+                  style: TextStyle(color: Colors.black),
+                )
+              : const Text(
+                  "アカウント",
+                  style: TextStyle(
+                    color: Color.fromRGBO(100, 205, 250, 1.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
           centerTitle: true,
           leading: edit
               ? InkWell(
-            onTap: () {
-              setState(() {
-                edit = false;
-              });
-            },
-            child: Icon(
-              Icons.close,
-              color: Colors.blueGrey,
-            ),
-          )
-              : SizedBox(),
+                  onTap: () {
+                    setState(() {
+                      edit = false;
+                    });
+                  },
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.blueGrey,
+                  ),
+                )
+              : const SizedBox(),
           actions: [
             edit
                 ? ChangeNotifierProvider<Model>(
-                create: (_) => Model(),
-                child: Consumer<Model>(builder: (context, model, child) {
-                  return TextButton(
-                    child: Text(
-                      "保存",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    onPressed: () async {
-                      model.startLoading();
+                    create: (_) => Model(),
+                    child: Consumer<Model>(builder: (context, model, child) {
+                      return TextButton(
+                        child: const Text(
+                          "保存",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                        onPressed: () async {
+                          model.startLoading();
 
-                      getData();
+                          getData();
 
-                      await FirebaseFirestore.instance
-                          .collection('user')
-                          .doc(username)
-                          .update({
-                        'title': username,
-                        'imageURL': userimage,
-                        'headerURL': userheader,
-                        'comment': comment,
-                        'mail': usermail,
-                        'createdAt': Timestamp.now(),
-                      });
+                          await FirebaseFirestore.instance
+                              .collection('user')
+                              .doc(username)
+                              .update({
+                            'title': username,
+                            'imageURL': userImage,
+                            'headerURL': userHeader,
+                            'comment': comment,
+                            'mail': userMail,
+                            'createdAt': Timestamp.now(),
+                          });
 
-                      model.endLoading();
+                          model.endLoading();
 
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('保存完了'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('OK'),
-                                onPressed: () async {
-                                  setState(() {
-                                    edit = false;
-                                    Navigator.of(context).pop();
-                                  });
-                                },
-                              ),
-                            ],
+                          await showDialog(
+                            context: navigatorKey.currentContext!,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('保存完了'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () async {
+                                      setState(() {
+                                        edit = false;
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                       );
-                    },
-                  );
-                }))
+                    }))
                 : TextButton(
-              child: Text(
-                "編集",
-                style: TextStyle(color: Colors.black, fontSize: 15),
-              ),
-              onPressed: () {
-                setState(() {
-                  edit = true;
-                });
-              },
-            )
+                    child: const Text(
+                      "編集",
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        edit = true;
+                      });
+                    },
+                  )
           ],
         ),
         body: edit
-            ? editbuilder(context)
+            ? editBuilder(context)
             : FutureBuilder(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return SingleChildScrollView(
-                child: Stack(
-                  children: [
-                    Container(
-                        width: size.width,
-                        height: size.height,
-                        child: Image.asset('assets/polygon.jpg')),
-                    Column(
-                      children: [
-                        UserHeader(userheader: userheader, userimage: userimage),
-                        comment.length != 0
-                            ? UserNameComment(username, comment)
-                            : UserName(username),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Center(
-                            child: Text(
-                              usermail
-                            ),
+                future: getData(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return SingleChildScrollView(
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                              width: size.width,
+                              height: size.height,
+                              child: Image.asset('assets/polygon.jpg')),
+                          Column(
+                            children: [
+                              UserHeader(
+                                  userheader: userHeader, userimage: userImage),
+                              comment.isNotEmpty
+                                  ? UserNameComment(username, comment)
+                                  : UserName(username),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: Center(
+                                  child: Text(userMail),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return Container(
-                decoration: new BoxDecoration(color: Colors.white),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-        ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+              ),
       ),
     );
   }
 
   // 編集画面
-  Widget editbuilder(BuildContext context) {
+  Widget editBuilder(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final _controller = TextEditingController();
-    _controller.text = comment;
+    final controller = TextEditingController();
+    controller.text = comment;
 
     return ChangeNotifierProvider<Model>(
       create: (_) => Model(),
@@ -211,13 +213,17 @@ class _AccountPageState extends State<AccountPage> {
               child: SingleChildScrollView(
                 child: Stack(
                   children: [
-                    Container(
+                    SizedBox(
                         width: size.width,
                         height: size.height,
                         child: Image.asset('assets/polygon.jpg')),
                     Column(
                       children: <Widget>[
-                        HeaderChoice(username, userheader, userimage),
+                        HeaderChoice(
+                          username,
+                          userHeader: userHeader,
+                          userImage: userImage,
+                        ),
                         UserName(username),
                         Container(
                           margin: const EdgeInsets.all(15.0),
@@ -225,18 +231,19 @@ class _AccountPageState extends State<AccountPage> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(color: Colors.black),
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8.0)),
                           ),
                           child: TextField(
-                            controller: _controller,
+                            controller: controller,
                             maxLength: 20,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15.0,
                               color: Colors.black,
                             ),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
-                              contentPadding: const EdgeInsets.only(
+                              contentPadding: EdgeInsets.only(
                                 top: 5.0,
                                 bottom: 5.0,
                                 left: 10.0,
@@ -247,7 +254,7 @@ class _AccountPageState extends State<AccountPage> {
                             onChanged: (text) async {
                               comment = text;
                               final SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
+                                  await SharedPreferences.getInstance();
                               prefs.setString('comment', comment);
                             },
                           ),
@@ -262,12 +269,12 @@ class _AccountPageState extends State<AccountPage> {
           Consumer<Model>(builder: (context, model, child) {
             return model.isLoading
                 ? Container(
-              color: Colors.grey.withOpacity(0.5),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-                : SizedBox();
+                    color: Colors.grey.withValues(alpha: 0.5),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : const SizedBox();
           }),
         ],
       ),

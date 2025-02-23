@@ -7,6 +7,8 @@ import 'user_login.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:polygon/first_launch/first_view.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -32,6 +34,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.blueGrey[900],
       ),
+      navigatorKey: navigatorKey,
       home: const CheckData(),
     );
   }

@@ -5,21 +5,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ImageChoice extends StatefulWidget {
   final String username;
-  final String userimage;
+  final String userImage;
 
-  ImageChoice(this.username, this.userimage);
+  const ImageChoice(this.username, this.userImage, {super.key});
 
   @override
-  _ImageChoiceState createState() => _ImageChoiceState();
+  ImageChoiceState createState() => ImageChoiceState();
 }
 
-class _ImageChoiceState extends State<ImageChoice> {
-  late String userimage;
+class ImageChoiceState extends State<ImageChoice> {
+  late String userImage;
 
   @override
   void initState() {
     super.initState();
-    userimage = widget.userimage;
+    userImage = widget.userImage;
     getData(); // Load image from SharedPreferences on widget load
   }
 
@@ -27,7 +27,7 @@ class _ImageChoiceState extends State<ImageChoice> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        userimage = prefs.getString('image') ?? ''; // Update user image if found in preferences
+        userImage = prefs.getString('image') ?? ''; // Update user image if found in preferences
       });
     }
   }
@@ -37,7 +37,7 @@ class _ImageChoiceState extends State<ImageChoice> {
     return Consumer<Model>(builder: (context, model, child) {
       return InkWell(
         onTap: () async {
-          String newImage = await model.setImage(widget.username + 'image');
+          String newImage = await model.setImage("${widget.username}-image");
 
           if (newImage.isNotEmpty) {
             final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,7 +45,7 @@ class _ImageChoiceState extends State<ImageChoice> {
 
             if (mounted) {
               setState(() {
-                userimage = newImage; // Update user image
+                userImage = newImage; // Update user image
               });
             }
           }
@@ -53,17 +53,17 @@ class _ImageChoiceState extends State<ImageChoice> {
         child: Container(
           width: 130.0,
           height: 130.0,
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white, width: 7),
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.fill,
-              image: userimage.isNotEmpty
-                  ? NetworkImage(userimage)
-                  : AssetImage('assets/preimage.JPG') as ImageProvider,
+              image: userImage.isNotEmpty
+                  ? NetworkImage(userImage)
+                  : const AssetImage('assets/preimage.JPG') as ImageProvider,
               colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.6), // `withValues()` → `withOpacity()`
+                Colors.grey.withValues(alpha: 0.5),
                 BlendMode.dstATop,
               ),
             ),

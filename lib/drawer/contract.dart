@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ContractPage extends StatefulWidget {
+  const ContractPage({super.key});
+
   @override
-  ContractPageState createState() => new ContractPageState();
+  ContractPageState createState() => ContractPageState();
 }
 
 class ContractPageState extends State<ContractPage> {
@@ -27,24 +29,25 @@ class ContractPageState extends State<ContractPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('利用規約'),
+        title: const Text('利用規約'),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(68, 114, 196, 1.0),
+        backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Column(children: [
         Container(
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           height: size.height / 1.3,
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: const Color.fromRGBO(68, 114, 196, 1.0), width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: SingleChildScrollView(
             child: Text(_out),
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: Color.fromRGBO(68, 114, 196, 1.0), width: 2),
-            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ]),

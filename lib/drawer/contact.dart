@@ -2,136 +2,141 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
+import 'package:polygon/main.dart';
 
 class Contact extends StatelessWidget {
+  const Contact({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: ContactPage(),
     );
   }
 }
 
 class ContactPage extends StatefulWidget {
+  const ContactPage({super.key});
+
   @override
-  _ContactPageState createState() => _ContactPageState();
+  ContactPageState createState() => ContactPageState();
 }
 
-class _ContactPageState extends State<ContactPage> {
-  TextEditingController emailSubject = TextEditingController();
-  TextEditingController emailBody = TextEditingController();
+class ContactPageState extends State<ContactPage> {
+  final TextEditingController emailSubject = TextEditingController();
+  final TextEditingController emailBody = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(68, 114, 196, 1.0),
-        title: Text(
-          "コンタクト",
-        ),
+        backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
+        title: const Text("コンタクト"),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: ChangeNotifierProvider<Model>(
         create: (_) => Model(),
-        child: Consumer<Model>(builder: (context, model, child) {
-          return SingleChildScrollView(
-            child: Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
+        child: Consumer<Model>(
+          builder: (context, model, child) {
+            return SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(color: Colors.black),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(8.0))),
-                        child: TextField(
-                          controller: emailSubject,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.all(20.0),
-                            hintText: 'タイトル',
+                                const BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: TextField(
+                            controller: emailSubject,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.all(20.0),
+                              hintText: 'タイトル',
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 20),
-                        decoration: BoxDecoration(
+                        Container(
+                          margin: const EdgeInsets.only(top: 10, bottom: 20),
+                          decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(color: Colors.black),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(8.0))),
-                        child: TextField(
-                          controller: emailBody,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 18,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.all(20.0),
-                            hintText: 'ご意見・ご不満などお書きください',
+                                const BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: TextField(
+                            controller: emailBody,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 18,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.all(20.0),
+                              hintText: 'ご意見・ご不満などお書きください',
+                            ),
                           ),
                         ),
-                      ),
-                      TextButton(
-                        child: Text(
-                          '送信',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(100, 205, 250, 1.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final navigator = Navigator.of(context);
+                            model.startLoading();
+                            try {
+                              await flutterEmailSenderMail();
+                              model.endLoading();
+                              model.dialog(
+                                  navigatorKey.currentContext!, "送信完了");
+                              navigator.pop();
+                            } catch (e) {
+                              model.endLoading();
+                              model.dialog(
+                                  navigatorKey.currentContext!, "送信エラー");
+                            }
+                          },
+                          child: const Text(
+                            '送信',
+                            style: TextStyle(fontSize: 15, color: Colors.black),
                           ),
                         ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(100, 205, 250, 1.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text('※お使いのデバイスのメールアドレスで送信します'),
                         ),
-                        onPressed: () async {
-                          model.startLoading();
-                          try {
-                            await flutterEmailSenderMail();
-                            model.endLoading();
-                            model.dialog(context, "送信完了");
-                            Navigator.of(context).pop();
-                          } catch (e) {
-                            model.endLoading();
-                            model.dialog(context, "送信エラー");
-                          }
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text('※お使いのデバイスのメールアドレスで送信します'),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                model.isLoading
-                    ? Container(
-                  color: Colors.grey.withOpacity(0.5),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-                    : SizedBox(),
-              ],
-            ),
-          );
-        }),
+                  if (model.isLoading)
+                    Container(
+                      color: Colors.grey.withValues(alpha: 0.5),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  flutterEmailSenderMail() async {
+  Future<void> flutterEmailSenderMail() async {
     final Email email = Email(
-      body: '${emailBody.text}',
-      subject: '${emailSubject.text}',
+      body: emailBody.text,
+      subject: emailSubject.text,
       recipients: ['polygon.chat@gmail.com'],
     );
 

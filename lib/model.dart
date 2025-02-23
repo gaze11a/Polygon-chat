@@ -40,21 +40,21 @@ class Model extends ChangeNotifier {
   Future<String> setImage(String filename) async {
     try {
       startLoading();
-      print("[DEBUG] setImage() called for filename: $filename");
+      debugPrint("[DEBUG] setImage() called for filename: $filename");
 
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) {
-        print("[DEBUG] No image selected.");
+        debugPrint("[DEBUG] No image selected.");
         endLoading();
         return ""; // 空文字を返す（AssetImage を使う）
       }
 
       File imageFile = File(pickedFile.path);
-      print("[DEBUG] Image picked: ${imageFile.path}");
+      debugPrint("[DEBUG] Image picked: ${imageFile.path}");
 
       File? compressedFile = await compressImage(imageFile, 50);
       if (compressedFile == null) {
-        print("[DEBUG] Image compression failed.");
+        debugPrint("[DEBUG] Image compression failed.");
         endLoading();
         return ""; // 空文字を返す（AssetImage を使う）
       }
@@ -64,40 +64,40 @@ class Model extends ChangeNotifier {
       TaskSnapshot snapshot = await uploadTask;
       String imageURL = await snapshot.ref.getDownloadURL();
 
-      print("[DEBUG] Upload successful. Image URL: $imageURL");
+      debugPrint("[DEBUG] Upload successful. Image URL: $imageURL");
       endLoading();
       return imageURL;
     } catch (e) {
-      print("[ERROR] Firebase upload failed: $e");
+      debugPrint("[ERROR] Firebase upload failed: $e");
       endLoading();
       return "";
     }
   }
 
   Future<void> deleteAccount(BuildContext context, String password) async {
-    print("[DEBUG] deleteAccount() called!");
+    debugPrint("[DEBUG] deleteAccount() called!");
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        print("[ERROR] No user signed in.");
-        dialog(context, "ユーザーが見つかりません。");
+        debugPrint("[ERROR] No user signed in.");
+        if (context.mounted) dialog(context, "ユーザーが見つかりません。");
         return;
       }
 
       String uid = user.uid;
       String email = user.email ?? "";
-      print("[DEBUG] User ID: $uid");
-      print("[DEBUG] User Email: $email");
+      debugPrint("[DEBUG] User ID: $uid");
+      debugPrint("[DEBUG] User Email: $email");
 
       // 🔹 受け取ったパスワードで認証
       try {
         AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
         await user.reauthenticateWithCredential(credential);
-        print("[DEBUG] User reauthenticated successfully.");
+        debugPrint("[DEBUG] User reauthenticated successfully.");
       } catch (e) {
-        print("[ERROR] Reauthentication failed: $e");
-        dialog(context, "パスワードが間違っています。再入力してください。");
+        debugPrint("[ERROR] Reauthentication failed: $e");
+        if (context.mounted) dialog(context, "パスワードが間違っています。再入力してください。");
         return;
       }
 
@@ -110,71 +110,74 @@ class Model extends ChangeNotifier {
 
         for (var doc in snapshot.docs) {
           await FirebaseFirestore.instance.collection('user').doc(doc.id).delete();
-          print("[DEBUG] Deleted Firestore user document: ${doc.id}");
+          debugPrint("[DEBUG] Deleted Firestore user document: ${doc.id}");
         }
       } catch (e) {
-        print("[ERROR] Failed to delete Firestore user document: $e");
+        debugPrint("[ERROR] Failed to delete Firestore user document: $e");
       }
 
       // 🔹 Firebase Storage の画像削除
       try {
         await FirebaseStorage.instance.ref().child("user/$uid").delete();
         await FirebaseStorage.instance.ref().child("headers/$uid").delete();
-        print("[DEBUG] Storage images deleted");
+        debugPrint("[DEBUG] Storage images deleted");
       } catch (e) {
-        print("[WARNING] Storage images not found: $e");
+        debugPrint("[WARNING] Storage images not found: $e");
       }
 
       // 🔹 Firebase Authentication のアカウント削除
       try {
         await user.delete();
-        print("[DEBUG] Firebase Auth user deleted");
+        debugPrint("[DEBUG] Firebase Auth user deleted");
       } catch (e) {
-        print("[ERROR] Firebase Auth user delete failed: $e");
-        dialog(context, "アカウント削除に失敗しました。もう一度お試しください。");
+        debugPrint("[ERROR] Firebase Auth user delete failed: $e");
+        if (context.mounted) dialog(context, "アカウント削除に失敗しました。もう一度お試しください。");
         return;
       }
 
       // 🔹 Firestore のキャッシュをクリア
       await FirebaseFirestore.instance.clearPersistence();
-      print("[DEBUG] Firestore cache cleared");
+      debugPrint("[DEBUG] Firestore cache cleared");
 
       // 🔹 SharedPreferences をクリア
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
-      print("[DEBUG] SharedPreferences cleared");
+      debugPrint("[DEBUG] SharedPreferences cleared");
 
       // 🔹 削除完了ダイアログを表示
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("アカウント削除完了"),
-            content: Text("アカウントを削除しました。ログアウトします。"),
-            actions: <Widget>[
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (context.mounted) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("アカウント削除完了"),
+              content: const Text("アカウントを削除しました。ログアウトします。"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
 
       // 🔹 1秒待機して Firestore の削除を確実に適用
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       // 🔹 確実にログアウト
       await FirebaseAuth.instance.signOut();
-      print("[DEBUG] User signed out");
+      debugPrint("[DEBUG] User signed out");
 
     } catch (e) {
-      print("[ERROR] Failed to delete account: $e");
-      dialog(context, "アカウント削除に失敗しました。もう一度お試しください。");
+      debugPrint("[ERROR] Failed to delete account: $e");
+      if (context.mounted) dialog(context, "アカウント削除に失敗しました。もう一度お試しください。");
     }
   }
+
 
 
 
@@ -185,21 +188,21 @@ class Model extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("パスワードを入力"),
+          title: const Text("パスワードを入力"),
           content: TextField(
             obscureText: true,
-            decoration: InputDecoration(hintText: "パスワード"),
+            decoration: const InputDecoration(hintText: "パスワード"),
             onChanged: (value) {
               password = value;
             },
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("キャンセル"),
+              child: const Text("キャンセル"),
               onPressed: () => Navigator.of(context).pop(null),
             ),
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () => Navigator.of(context).pop(password),
             ),
           ],
@@ -214,15 +217,15 @@ class Model extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("確認"),
+          title: const Text("確認"),
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text("キャンセル"),
+              child: const Text("キャンセル"),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             TextButton(
-              child: Text("OK", style: TextStyle(color: Colors.red)),
+              child: const Text("OK", style: TextStyle(color: Colors.red)),
               onPressed: () => Navigator.of(context).pop(true),
             ),
           ],

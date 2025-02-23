@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../main.dart';
 import '../user_login.dart';
 
 // ignore: must_be_immutable
 class FirstView extends StatelessWidget {
+  const FirstView({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: FirstViewPage(),
     );
   }
 }
 
 class FirstViewPage extends StatefulWidget {
+  const FirstViewPage({super.key});
+
   @override
-  FirstViewPageState createState() => new FirstViewPageState();
+  FirstViewPageState createState() => FirstViewPageState();
 }
 
 class FirstViewPageState extends State<FirstViewPage> {
@@ -39,27 +44,27 @@ class FirstViewPageState extends State<FirstViewPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('利用規約'),
+        title: const Text('利用規約'),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(68, 114, 196, 1.0),
+        backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
         automaticallyImplyLeading: false,
       ),
       body: Column(children: [
         Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           height: size.height / 1.5,
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: const Color.fromRGBO(68, 114, 196, 1.0), width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: SingleChildScrollView(
             child: Text(_out),
-          ),
-          decoration: BoxDecoration(
-            border:
-            Border.all(color: Color.fromRGBO(68, 114, 196, 1.0), width: 2),
-            borderRadius: BorderRadius.circular(8),
           ),
         ),
         CheckboxListTile(
           value: agree,
-          title: Text(
+          title: const Text(
             '利用規約に同意する',
           ),
           controlAffinity: ListTileControlAffinity.leading,
@@ -70,24 +75,24 @@ class FirstViewPageState extends State<FirstViewPage> {
           },
         ),
         TextButton(
-          child: Text(
+          style: TextButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(100, 205, 250, 1.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
+          child: const Text(
             '次へ',
             style: TextStyle(
               fontSize: 15,
               color: Colors.black,
             ),
           ),
-          style: TextButton.styleFrom(
-            backgroundColor: Color.fromRGBO(100, 205, 250, 1.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
           onPressed: () {
             if (agree) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => PrivacyPolicy(),
+                  builder: (context) => const PrivacyPolicy(),
                 ),
               );
             } else {
@@ -95,10 +100,10 @@ class FirstViewPageState extends State<FirstViewPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('チェックボックスにチェックを入れてください'),
+                    title: const Text('チェックボックスにチェックを入れてください'),
                     actions: <Widget>[
                       TextButton(
-                        child: Text('OK'),
+                        child: const Text('OK'),
                         onPressed: () async {
                           Navigator.of(context).pop();
                         },
@@ -117,17 +122,21 @@ class FirstViewPageState extends State<FirstViewPage> {
 
 // ignore: must_be_immutable
 class PrivacyPolicy extends StatelessWidget {
+  const PrivacyPolicy({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: PrivacyPolicyPage(),
     );
   }
 }
 
 class PrivacyPolicyPage extends StatefulWidget {
+  const PrivacyPolicyPage({super.key});
+
   @override
-  PrivacyPolicyPageState createState() => new PrivacyPolicyPageState();
+  PrivacyPolicyPageState createState() => PrivacyPolicyPageState();
 }
 
 class PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
@@ -151,28 +160,28 @@ class PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('プライバシーポリシー'),
+        title: const Text('プライバシーポリシー'),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(68, 114, 196, 1.0),
+        backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(20),
+            margin: const EdgeInsets.all(20),
             height: size.height / 1.5,
-            child: SingleChildScrollView(
-              child: Text(_out),
-            ),
             decoration: BoxDecoration(
               border: Border.all(
-                  color: Color.fromRGBO(68, 114, 196, 1.0), width: 2),
+                  color: const Color.fromRGBO(68, 114, 196, 1.0), width: 2),
               borderRadius: BorderRadius.circular(8),
+            ),
+            child: SingleChildScrollView(
+              child: Text(_out),
             ),
           ),
           CheckboxListTile(
             value: agree,
-            title: Text(
+            title: const Text(
               'プライバシーポリシーに同意する',
             ),
             controlAffinity: ListTileControlAffinity.leading,
@@ -183,26 +192,26 @@ class PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
             },
           ),
           TextButton(
-            child: Text(
+            style: TextButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(100, 205, 250, 1.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            child: const Text(
               'はじめる',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.black,
               ),
             ),
-            style: TextButton.styleFrom(
-              backgroundColor: Color.fromRGBO(100, 205, 250, 1.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
             onPressed: () async {
               if (agree) {
                 final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
+                    await SharedPreferences.getInstance();
                 prefs.setBool('isFirstLaunch', false);
 
-                Navigator.of(context).pushReplacement(
+                Navigator.of(navigatorKey.currentContext!).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => UserLogin(),
                   ),
@@ -212,10 +221,10 @@ class PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('チェックボックスにチェックを入れてください'),
+                      title: const Text('チェックボックスにチェックを入れてください'),
                       actions: <Widget>[
                         TextButton(
-                          child: Text('OK'),
+                          child: const Text('OK'),
                           onPressed: () async {
                             Navigator.of(context).pop();
                           },

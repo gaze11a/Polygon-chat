@@ -52,15 +52,15 @@ class _UserLogin extends State<UserLogin> {
                       width: 150,
                       child: Image.asset('assets/logo.png')),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
                   child: Text(
                     'ポリゴンチャット',
                     style: TextStyle(fontSize: 30),
                   ),
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "メールアドレス"),
+                  decoration: const InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     setState(() {
                       usermail = value;
@@ -68,7 +68,7 @@ class _UserLogin extends State<UserLogin> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "パスワード"),
+                  decoration: const InputDecoration(labelText: "パスワード"),
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
@@ -79,7 +79,7 @@ class _UserLogin extends State<UserLogin> {
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: ElevatedButton(
-                    child: Text('ログイン', style: TextStyle(fontSize: 15)),
+                    child: const Text('ログイン', style: TextStyle(fontSize: 15)),
                     onPressed: () async {
                       try {
                         final loginResult = await auth.signInWithEmailAndPassword(
@@ -110,12 +110,12 @@ class _UserLogin extends State<UserLogin> {
                   padding: const EdgeInsets.only(top: 15.0),
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       children: [
-                        TextSpan(text: 'アカウントをお持ちでない方は '),
+                        const TextSpan(text: 'アカウントをお持ちでない方は '),
                         TextSpan(
                           text: '新規登録',
-                          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () async {
                               SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -133,12 +133,12 @@ class _UserLogin extends State<UserLogin> {
                   padding: const EdgeInsets.only(top: 15.0),
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       children: [
-                        TextSpan(text: 'パスワードが分からない方は '),
+                        const TextSpan(text: 'パスワードが分からない方は '),
                         TextSpan(
                           text: '再設定',
-                          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () async {
                               Navigator.of(context).push(MaterialPageRoute(
