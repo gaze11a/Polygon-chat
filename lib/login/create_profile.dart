@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:polygon/routes/account/image_choice.dart'; // 🔥 追加
+import 'package:polygon/routes/utils/image_choice.dart'; // 🔥 追加
 import 'package:polygon/routes/home/home.dart';
 import 'package:provider/provider.dart';
-import 'package:polygon/model.dart';
+import 'package:polygon/routes/utils/model.dart';
 
-import 'loading_dialog.dart';
-import 'main.dart';
+import '../routes/utils/loading_dialog.dart';
+import '../main.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({super.key});

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:polygon/polygon_drawer.dart';
+import 'package:polygon/routes/home/polygon_drawer.dart';
 import 'package:polygon/routes/home/common_list.dart';
-import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
+import 'package:polygon/routes/home/user_tile/home_tile.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:polygon/loading_dialog.dart';
+import 'package:polygon/routes/utils/loading_dialog.dart';
 import 'package:polygon/routes/home/user_detail/user_header.dart';
 import 'package:polygon/routes/home/user_detail/user_name.dart';
 import 'package:polygon/routes/home/user_detail/user_name_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
-import 'image_choice.dart';
+import '../utils/image_choice.dart';
 
 class Account extends StatelessWidget {
   const Account({super.key});

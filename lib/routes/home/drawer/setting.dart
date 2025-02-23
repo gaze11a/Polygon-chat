@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:polygon/drawer/contract.dart';
-import 'package:polygon/drawer/privacy.dart';
+import 'package:polygon/routes/home/drawer/contract.dart';
+import 'package:polygon/routes/home/drawer/privacy.dart';
 import 'package:provider/provider.dart';
-import 'package:polygon/model.dart';
+import 'package:polygon/routes/utils/model.dart';
 
-import '../main.dart';
-import '../user_login.dart';
+import '../../../main.dart';
+import '../../../login/user_login.dart';
 
 class Setting extends StatelessWidget {
   const Setting({super.key});

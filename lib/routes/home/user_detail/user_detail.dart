@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polygon/routes/home/user_detail/user_header.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:polygon/routes/chat.dart';
+import 'package:polygon/routes/chat/chat.dart';
 
 import '../../../main.dart';
 

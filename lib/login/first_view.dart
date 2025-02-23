@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
-import '../user_login.dart';
+import 'user_login.dart';
 
 // ignore: must_be_immutable
 class FirstView extends StatelessWidget {

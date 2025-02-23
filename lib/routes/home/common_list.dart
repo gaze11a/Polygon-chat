@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
+import 'package:polygon/routes/home/user_tile/home_tile.dart';
 
 class CommonList extends StatelessWidget {
   const CommonList({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
-import 'package:polygon/model.dart';
+import 'package:polygon/routes/utils/model.dart';
 import 'package:polygon/main.dart';
-import 'package:polygon/loading_dialog.dart'; // 🔹 ローディングダイアログをインポート
+import 'package:polygon/routes/utils/loading_dialog.dart'; // 🔹 ローディングダイアログをインポート
 
 class Contact extends StatelessWidget {
   const Contact({super.key});

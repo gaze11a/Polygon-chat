@@ -3,10 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:polygon/model.dart';
-import 'user_login.dart';
+import 'package:polygon/routes/utils/model.dart';
+import 'login/user_login.dart';
 import 'package:polygon/root.dart' as custom_root;
-import 'package:polygon/first_launch/first_view.dart';
+import 'package:polygon/login/first_view.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

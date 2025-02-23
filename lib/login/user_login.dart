@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:polygon/create_profile.dart';
-import 'package:polygon/loading_dialog.dart';
-import 'package:polygon/reset_password.dart';
+import 'package:polygon/login/create_profile.dart';
+import 'package:polygon/routes/utils/loading_dialog.dart';
+import 'package:polygon/login/reset_password.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/gestures.dart';
 
-import 'main.dart';
+import '../main.dart';
 
 class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
