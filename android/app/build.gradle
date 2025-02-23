@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "polygon.chat"
+    namespace = "com.satomitsu.polygon.chat"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "polygon.chat"
+        applicationId = "com.satomitsu.polygon.chat"
         minSdkVersion 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -5,6 +5,10 @@ import 'user_login.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:polygon/first_launch/first_view.dart';
 
+// ログインに失敗したときログイン失敗ポップアウト
+// delete paira and hobby menu
+// フレンド機能の追加
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

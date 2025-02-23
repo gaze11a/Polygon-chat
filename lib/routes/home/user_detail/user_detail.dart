@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/routes/home/user_detail/user_header.dart';
-import 'package:polygon/routes/home/user_detail/user_hobby.dart';
-import 'package:polygon/routes/home/user_detail/user_name.dart';
-import 'package:polygon/routes/home/user_detail/user_name_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polygon/routes/chat.dart';
@@ -12,15 +9,14 @@ class UserDetail extends StatelessWidget {
   final String imageURL;
   final String headerURL;
   final String comment;
-  final List<String> userlist;
 
-  UserDetail(this.title, this.imageURL, this.headerURL, this.comment, this.userlist);
+  UserDetail(this.title, this.imageURL, this.headerURL, this.comment);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: UserDetailPage(title, imageURL, headerURL, comment, userlist),
+        body: UserDetailPage(title, imageURL, headerURL, comment),
       ),
     );
   }
@@ -31,13 +27,12 @@ class UserDetailPage extends StatefulWidget {
   final String imageURL;
   final String headerURL;
   final String comment;
-  final List<String> userlist;
 
-  UserDetailPage(this.title, this.imageURL, this.headerURL, this.comment, this.userlist);
+  UserDetailPage(this.title, this.imageURL, this.headerURL, this.comment);
 
   @override
   _UserDetailPageState createState() =>
-      _UserDetailPageState(title, imageURL, headerURL, comment, userlist);
+      _UserDetailPageState(title, imageURL, headerURL, comment);
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
@@ -45,9 +40,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
   final String imageURL;
   final String headerURL;
   final String comment;
-  final List<String> userlist;
 
-  _UserDetailPageState(this.title, this.imageURL, this.headerURL, this.comment, this.userlist);
+  _UserDetailPageState(this.title, this.imageURL, this.headerURL, this.comment);
 
   String username = '';
   String usermail = '';
@@ -139,11 +133,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
         body: Column(
           children: [
             UserHeader(userheader: headerURL, userimage: imageURL),
-            comment.isNotEmpty ? UserNameComment(title, comment) : UserName(title),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: UserHobby(userlist),
-            ),
+            //comment.isNotEmpty ? UserNameComment(title, comment) : UserName(title),
             chat ? talkbutton(context) : Container(),
           ],
         ),

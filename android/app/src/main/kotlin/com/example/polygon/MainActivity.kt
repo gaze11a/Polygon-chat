@@ -1,4 +1,4 @@
-package polygon.chat
+package com.satomitsu.polygon.chat
 
 import io.flutter.embedding.android.FlutterActivity
 

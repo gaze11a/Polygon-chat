@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:polygon/routes/home/home_grid/home_tile.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonList extends StatelessWidget {
   @override
@@ -19,40 +18,14 @@ class CommonListPage extends StatefulWidget {
 }
 
 class _CommonListPageState extends State<CommonListPage> {
-  bool noChoice = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  // Removed hobbylist logic
-  Future<void> getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String hobby = prefs.getString('hobby') ?? '';
-    setState(() {
-      noChoice = hobby.isEmpty;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final double itemHeight = (size.height - kToolbarHeight - 130) / 2;
     final double itemWidth = size.width / 2;
 
-    if (noChoice) {
-      return const Center(
-        child: Text('趣味が選択されていません。設定で選択してください。'),
-      );
-    }
-
-    // Removed hobby filtering logic
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('user')
-          .snapshots(), // Removed hobby filtering
+      stream: FirebaseFirestore.instance.collection('user').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -110,7 +83,6 @@ class _CommonListPageState extends State<CommonListPage> {
                 data['imageURL'],
                 data['headerURL'],
                 data['comment'],
-                [], // Passing an empty list
               ),
               fullscreenDialog: true,
             ),

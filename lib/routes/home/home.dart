@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:polygon/polygon_drawer.dart';
 import 'package:polygon/routes/home/common_list.dart';
 import 'package:polygon/routes/home/home_grid/home_tile.dart';
-import 'package:polygon/routes/home/tab_info.dart';
 import 'package:polygon/routes/home/user_detail/user_detail.dart';
-import 'package:polygon/routes/home/user_list.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -36,43 +34,25 @@ class _HomePageState extends State<HomePage> {
   bool _isSearching = false;
   String input = '';
 
-  final List<TabInfo> _tabs = [
-    TabInfo("最近", UserList()),
-    TabInfo("おなじシュミ", CommonList()),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height - kToolbarHeight - 130) / 2;
-    final double itemWidth = size.width / 2;
-
-    return DefaultTabController(
-      length: _tabs.length,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
-        drawer: PolygonDrawer(),
-        appBar: buildAppBar(),
-        body: _isSearching ? buildSearchResults(itemWidth, itemHeight) : buildTabView(),
-      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      drawer: PolygonDrawer(),
+      appBar: buildAppBar(),
+      body: _isSearching ? buildSearchResults() : CommonList(), // タブの代わりに CommonList を表示
     );
   }
 
-  Widget buildTabView() {
-    return TabBarView(
-      children: _tabs.map((tab) => tab.widget).toList(),
-    );
-  }
-
-  Widget buildSearchResults(double itemWidth, double itemHeight) {
+  Widget buildSearchResults() {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('user')
           .orderBy('title')
           .startAt([input])
-          .endAt([input + '\uf8ff'])
+          .endAt([input + '\\uf8ff'])
           .limit(20)
           .snapshots(),
       builder: (context, snapshot) {
@@ -83,12 +63,7 @@ class _HomePageState extends State<HomePage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return GridView.count(
-          padding: const EdgeInsets.all(5.0),
-          crossAxisSpacing: 5,
-          mainAxisSpacing: 5,
-          crossAxisCount: 2,
-          childAspectRatio: itemWidth / itemHeight,
+        return ListView(
           children: snapshot.data!.docs.map((document) {
             final data = document.data() as Map<String, dynamic>;
             return buildUserTile(data);
@@ -104,15 +79,11 @@ class _HomePageState extends State<HomePage> {
     String headerURL = data['headerURL'];
     String commentText = data['comment'];
 
-    // Removed hobbylist since you asked to remove it
     return Hero(
       tag: 'list$title',
       child: GestureDetector(
-        child: HomeTile(title, imageURL, commentText), // Updated constructor without hobbylist
+        child: HomeTile(title, imageURL, commentText),
         onTap: () {
-          // You can use a fixed list for hobbyList, for example:
-          List<String> hobbyList = ['Reading', 'Gaming', 'Music'];
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -121,7 +92,6 @@ class _HomePageState extends State<HomePage> {
                 imageURL,
                 headerURL,
                 commentText,
-                hobbyList, // Pass hobbyList as before
               ),
               fullscreenDialog: true,
             ),
@@ -141,27 +111,12 @@ class _HomePageState extends State<HomePage> {
         icon: const Icon(Icons.menu, color: Colors.blueGrey),
         onPressed: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      bottom: _isSearching ? null : buildTabBar(),
       actions: [
         IconButton(
           icon: icon,
           onPressed: toggleSearch,
         ),
       ],
-    );
-  }
-
-  PreferredSize buildTabBar() {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(50.0),
-      child: TabBar(
-        labelColor: const Color.fromRGBO(100, 205, 250, 1.0),
-        labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        unselectedLabelColor: Colors.grey,
-        indicatorColor: const Color.fromRGBO(100, 205, 250, 1.0),
-        indicatorWeight: 3,
-        tabs: _tabs.map((tab) => Tab(text: tab.label)).toList(),
-      ),
     );
   }
 

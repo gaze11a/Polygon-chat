@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:polygon/routes/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
-import 'package:polygon/routes/account/hobby_menu.dart';
 
 class CreateProfile extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -157,8 +157,7 @@ class CreateProfile extends StatelessWidget {
                                         onPressed: () async {
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
-                                              builder: (context) => HobbyMenu(
-                                                  username: model.userName),
+                                              builder: (context) => HomePage(),
                                             ),
                                           );
                                         },

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
 import 'package:polygon/routes/account/header_choice.dart';
-import 'package:polygon/routes/account/hobby_menu.dart';
 import 'package:polygon/routes/home/user_detail/user_header.dart';
-import 'package:polygon/routes/home/user_detail/user_hobby.dart';
 import 'package:polygon/routes/home/user_detail/user_name.dart';
 import 'package:polygon/routes/home/user_detail/user_name_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -110,7 +108,6 @@ class _AccountPageState extends State<AccountPage> {
                         'imageURL': userimage,
                         'headerURL': userheader,
                         'comment': comment,
-                        'hobby': hobbylist,
                         'mail': usermail,
                         'createdAt': Timestamp.now(),
                       });
@@ -171,10 +168,6 @@ class _AccountPageState extends State<AccountPage> {
                         comment.length != 0
                             ? UserNameComment(username, comment)
                             : UserName(username),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          child: UserHobby(hobbylist),
-                        ),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: Center(
@@ -256,34 +249,6 @@ class _AccountPageState extends State<AccountPage> {
                               final SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                               prefs.setString('comment', comment);
-                            },
-                          ),
-                        ),
-                        UserHobby(hobbylist),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextButton(
-                            child: Text('シュミを選択'),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              side: BorderSide(color: Colors.black, width: 1),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .push(
-                                MaterialPageRoute(
-                                  builder: (context) => HobbyMenu(username: username),
-                                ),
-                              )
-                                  .then((value) async {
-                                SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                                setState(() {
-                                  hobby = prefs.getString('hobby') ?? '';
-                                  hobbylist = hobby.split(',');
-                                  if (hobbylist[0] == "") hobbylist.removeAt(0);
-                                });
-                              });
                             },
                           ),
                         ),

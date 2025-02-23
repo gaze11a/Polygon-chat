@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:polygon/paira/paira.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chat.dart';
 
@@ -114,7 +113,6 @@ class _ChatroomPageState extends State<ChatroomPage> {
                     );
                   }).toList(),
                 ),
-                showpaira ? Paira() : const SizedBox(),
               ],
             );
           },

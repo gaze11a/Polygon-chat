@@ -34,43 +34,43 @@ class Model extends ChangeNotifier {
     return compressedFile != null ? File(compressedFile.path) : null;
   }
 
-  setImage(String filename) async {
-    String imageURL;
+  Future<String> setImage(String filename) async {
+    try {
+      startLoading();
+      print("[DEBUG] setImage() called for filename: $filename");
 
-    startLoading();
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile == null) {
+      final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) {
+        print("[DEBUG] No image selected.");
+        endLoading();
+        return ""; // 空文字を返す（AssetImage を使う）
+      }
+
+      File imageFile = File(pickedFile.path);
+      print("[DEBUG] Image picked: ${imageFile.path}");
+
+      File? compressedFile = await compressImage(imageFile, 50);
+      if (compressedFile == null) {
+        print("[DEBUG] Image compression failed.");
+        endLoading();
+        return ""; // 空文字を返す（AssetImage を使う）
+      }
+
+      Reference ref = FirebaseStorage.instance.ref().child('user').child(filename);
+      UploadTask uploadTask = ref.putFile(compressedFile);
+      TaskSnapshot snapshot = await uploadTask;
+      String imageURL = await snapshot.ref.getDownloadURL();
+
+      print("[DEBUG] Upload successful. Image URL: $imageURL");
       endLoading();
-      return null;
-    }
-
-    File imageFile = File(pickedFile.path);
-    var decodedImage = await decodeImageFromList(imageFile.readAsBytesSync());
-    var quality;
-    if (decodedImage.width >= 4320 && decodedImage.height >= 7680) {
-      quality = 2;
-    } else if (decodedImage.width >= 2160 && decodedImage.height >= 3840) {
-      quality = 10;
-    } else if (decodedImage.width >= 1080 && decodedImage.height >= 1920) {
-      quality = 25;
-    } else {
-      quality = 100;
-    }
-
-    File? compressedFile = await compressImage(imageFile, quality);
-    if (compressedFile == null) {
+      return imageURL; // 成功時はURLを返す
+    } catch (e) {
+      print("[ERROR] Firebase upload failed: $e");
       endLoading();
-      return null;
+      return ""; // エラー時も AssetImage を使う
     }
-
-    Reference ref = FirebaseStorage.instance.ref().child('user').child(filename);
-    UploadTask uploadTask = ref.putFile(compressedFile);
-    TaskSnapshot snapshot = await uploadTask;
-    imageURL = await snapshot.ref.getDownloadURL();
-
-    endLoading();
-    return imageURL;
   }
+
 
   Future<dynamic> dialog(BuildContext context, title) async {
     return showDialog(

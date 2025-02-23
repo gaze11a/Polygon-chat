@@ -66,7 +66,6 @@ class _UserListPageState extends State<UserListPage> {
             String imageURL = data['imageURL'] ?? '';
             String headerURL = data['headerURL'] ?? '';
             String commentText = data['comment'] ?? '';
-            List<String> hobbylist = List<String>.from(data['hobby'] ?? []);
 
             return Hero(
               tag: 'list$title',
@@ -77,7 +76,7 @@ class _UserListPageState extends State<UserListPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          UserDetail(title, imageURL, headerURL, commentText, hobbylist),
+                          UserDetail(title, imageURL, headerURL, commentText),
                       fullscreenDialog: true,
                     ),
                   );
