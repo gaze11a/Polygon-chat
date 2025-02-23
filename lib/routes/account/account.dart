@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:polygon/loading_dialog.dart';
-import 'package:polygon/routes/account/header_choice.dart';
 import 'package:polygon/routes/home/user_detail/user_header.dart';
 import 'package:polygon/routes/home/user_detail/user_name.dart';
 import 'package:polygon/routes/home/user_detail/user_name_comment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../main.dart';
 
 
 class Account extends StatelessWidget {
@@ -34,9 +31,18 @@ class AccountPageState extends State<AccountPage> {
   late String userImage;
   late String userHeader;
   late String comment;
-  late String hobby;
+  late Future<void> futureData;
 
   bool edit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = getData(); // 🔹 データ取得の `Future`
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadingDialog(context); // 🔹 `initState` の後にローディングを表示
+    });
+  }
 
   Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -100,7 +106,7 @@ class AccountPageState extends State<AccountPage> {
                   'createdAt': Timestamp.now(),
                 });
 
-                Navigator.of(navigatorKey.currentContext!).pop(); // 🔹 ローディングダイアログを閉じる
+                closeLoadingDialog(context); // 🔹 ローディングダイアログを閉じる
 
                 if (context.mounted) {
                   await showDialog(
@@ -138,16 +144,13 @@ class AccountPageState extends State<AccountPage> {
             )
           ],
         ),
-        body: edit
-            ? editBuilder(context)
-            : FutureBuilder(
-          future: getData(),
+        body: FutureBuilder(
+          future: futureData,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              loadingDialog(context); // 🔹 ローディング開始
-              return const SizedBox(); // ローディング中は何も表示しない
+              return const SizedBox(); // 何も表示しない
             } else {
-              Navigator.of(context).pop(); // 🔹 ローディングダイアログを閉じる
+              closeLoadingDialog(context); // 🔹 ローディングダイアログを閉じる
               return SingleChildScrollView(
                 child: Stack(
                   children: [
@@ -175,76 +178,6 @@ class AccountPageState extends State<AccountPage> {
           },
         ),
       ),
-    );
-  }
-
-  // 編集画面
-  Widget editBuilder(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final controller = TextEditingController();
-    controller.text = comment;
-
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: SingleChildScrollView(
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: size.width,
-                    height: size.height,
-                    child: Image.asset('assets/polygon.jpg'),
-                  ),
-                  Column(
-                    children: <Widget>[
-                      HeaderChoice(
-                        username,
-                        userHeader: userHeader,
-                        userImage: userImage,
-                      ),
-                      UserName(username),
-                      Container(
-                        margin: const EdgeInsets.all(15.0),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black),
-                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: TextField(
-                          controller: controller,
-                          maxLength: 20,
-                          style: const TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.black,
-                          ),
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(
-                              top: 5.0,
-                              bottom: 5.0,
-                              left: 10.0,
-                              right: 5.0,
-                            ),
-                            hintText: "ひとことを追加(20文字まで)",
-                          ),
-                          onChanged: (text) async {
-                            comment = text;
-                            final SharedPreferences prefs = await SharedPreferences.getInstance();
-                            prefs.setString('comment', comment);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

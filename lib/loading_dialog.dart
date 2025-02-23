@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void loadingDialog(BuildContext context) {
   showDialog(
-    barrierDismissible: false,
+    barrierDismissible: false, // ユーザーが手動で閉じられないようにする
     context: context,
     builder: (BuildContext context) {
       return Dialog(
@@ -24,8 +24,13 @@ void loadingDialog(BuildContext context) {
 }
 
 void closeLoadingDialog(BuildContext context) {
-  if (Navigator.of(context, rootNavigator: true).canPop()) {
-    Navigator.of(context, rootNavigator: true).pop();
-  }
+  Future.delayed(Duration.zero, () {
+    if (context.mounted && Navigator.of(context, rootNavigator: true).canPop()) {
+      debugPrint("[DEBUG] Closing loading dialog...");
+      Navigator.of(context, rootNavigator: true).pop();
+    } else {
+      debugPrint("[WARNING] Tried to close loading dialog but couldn't.");
+    }
+  });
 }
 
