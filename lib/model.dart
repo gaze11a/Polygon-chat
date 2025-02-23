@@ -6,7 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:polygon/loading_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'main.dart';
 
 class Model extends ChangeNotifier {
   String userName = '';
@@ -15,17 +18,8 @@ class Model extends ChangeNotifier {
   String userHeader = '';
   String userPassword = '';
   String infoText = '';
-  bool isLoading = false;
 
-  startLoading() {
-    isLoading = true;
-    notifyListeners();
-  }
 
-  endLoading() {
-    isLoading = false;
-    notifyListeners();
-  }
 
   Future<File?> compressImage(File imageFile, int quality) async {
     final XFile? compressedFile = await FlutterImageCompress.compressAndGetFile(
@@ -37,15 +31,14 @@ class Model extends ChangeNotifier {
     return compressedFile != null ? File(compressedFile.path) : null;
   }
 
-  Future<String> setImage(String filename) async {
+  Future<String> setImage(BuildContext context, String filename) async {
     try {
-      startLoading();
+      loadingDialog(context);
       debugPrint("[DEBUG] setImage() called for filename: $filename");
 
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile == null) {
         debugPrint("[DEBUG] No image selected.");
-        endLoading();
         return ""; // 空文字を返す（AssetImage を使う）
       }
 
@@ -55,7 +48,7 @@ class Model extends ChangeNotifier {
       File? compressedFile = await compressImage(imageFile, 50);
       if (compressedFile == null) {
         debugPrint("[DEBUG] Image compression failed.");
-        endLoading();
+        Navigator.of(navigatorKey.currentContext!).pop();
         return ""; // 空文字を返す（AssetImage を使う）
       }
 
@@ -65,11 +58,11 @@ class Model extends ChangeNotifier {
       String imageURL = await snapshot.ref.getDownloadURL();
 
       debugPrint("[DEBUG] Upload successful. Image URL: $imageURL");
-      endLoading();
+      Navigator.of(navigatorKey.currentContext!).pop();
       return imageURL;
     } catch (e) {
       debugPrint("[ERROR] Firebase upload failed: $e");
-      endLoading();
+      Navigator.of(navigatorKey.currentContext!).pop();
       return "";
     }
   }
@@ -236,13 +229,13 @@ class Model extends ChangeNotifier {
 
   checkform(BuildContext context) {
     if (userName.isEmpty) {
-      endLoading();
+      Navigator.of(context).pop();
       dialog(context, 'ユーザー名を入力してください');
     } else if (userMail.isEmpty) {
-      endLoading();
+      Navigator.of(context).pop();
       dialog(context, 'メールアドレスを入力してください');
     } else if (userPassword.isEmpty) {
-      endLoading();
+      Navigator.of(context).pop();
       dialog(context, 'パスワードを入力してください');
     }
   }

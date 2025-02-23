@@ -26,7 +26,7 @@ class HeaderChoice extends StatelessWidget {
       return InkWell(
         onTap: () async {
           // Fetch image from the model
-          userHeader = await model.setImage("$username-header");
+          userHeader = await model.setImage(context, "$username-header");
 
           // If the image is null or empty, fetch the default one
           if (userHeader == null || userHeader!.isEmpty) {

@@ -37,7 +37,7 @@ class ImageChoiceState extends State<ImageChoice> {
     return Consumer<Model>(builder: (context, model, child) {
       return InkWell(
         onTap: () async {
-          String newImage = await model.setImage("${widget.username}-image");
+          String newImage = await model.setImage(context, "${widget.username}-image");
 
           if (newImage.isNotEmpty) {
             final SharedPreferences prefs = await SharedPreferences.getInstance();

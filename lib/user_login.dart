@@ -104,7 +104,7 @@ class UserLoginState extends State<UserLogin> {
                         }
                       } catch (e) {
                         setState(() {
-                          infoText = 'ログインに失敗しました。';
+                          showErrorDialog(context, 'ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。');
                         });
                       }
                     },
@@ -161,4 +161,23 @@ class UserLoginState extends State<UserLogin> {
       ]),
     );
   }
+
+  void showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('エラー'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

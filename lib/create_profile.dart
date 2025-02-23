@@ -5,6 +5,7 @@ import 'package:polygon/routes/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/model.dart';
 
+import 'loading_dialog.dart';
 import 'main.dart';
 
 class CreateProfile extends StatefulWidget {
@@ -52,7 +53,7 @@ class CreateProfileState extends State<CreateProfile> {
                       child: InkWell(
                         onTap: () async {
                           String newImage =
-                          await model.setImage('${model.userName} + image');
+                          await model.setImage(context, '${model.userName} + image');
                           setState(() {
                             userImage = newImage;
                           });
@@ -114,7 +115,7 @@ class CreateProfileState extends State<CreateProfile> {
                           ),
                         ),
                         onPressed: () async {
-                          model.startLoading();
+                          loadingDialog(context);
                           model.checkform(context);
 
                           try {
@@ -153,7 +154,6 @@ class CreateProfileState extends State<CreateProfile> {
                                     .set({'fcmtoken': []});
                               }
 
-                              model.endLoading();
                               showDialog(
                                 context: navigatorKey.currentContext!,
                                 builder: (BuildContext context) {
@@ -175,13 +175,11 @@ class CreateProfileState extends State<CreateProfile> {
                                 },
                               );
                             } else {
-                              model.endLoading();
                               model.dialog(
                                   navigatorKey.currentContext!,
                                   "そのユーザー名は既に登録されています。");
                             }
                           } catch (e) {
-                            model.endLoading();
                             model.dialog(
                                 navigatorKey.currentContext!,
                                 "エラーが発生しました: ${e.toString()}");
