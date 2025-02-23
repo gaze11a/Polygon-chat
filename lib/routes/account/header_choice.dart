@@ -56,7 +56,7 @@ class HeaderChoice extends StatelessWidget {
                         fit: BoxFit.fill,
                         image: userHeader?.isNotEmpty ?? false
                             ? NetworkImage(userHeader!)
-                            : const AssetImage('assets/preHeader.jpg')
+                            : const AssetImage('assets/preheader.jpg')
                                 as ImageProvider,
                         colorFilter: ColorFilter.mode(
                           Colors.black.withValues(),

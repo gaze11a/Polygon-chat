@@ -25,7 +25,7 @@ class PolygonDrawer extends StatelessWidget {
               child: Text(
                 "ポリゴンチャット",
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 20,
                   color: Colors.white,
                   fontFamily: 'pupupu',
                 ),
