@@ -20,14 +20,14 @@ class ImageChoiceState extends State<ImageChoice> {
   void initState() {
     super.initState();
     userImage = widget.userImage;
-    getData(); // Load image from SharedPreferences on widget load
+    getData(); // 🔹 `SharedPreferences` から画像を取得
   }
 
   Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        userImage = prefs.getString('image') ?? ''; // Update user image if found in preferences
+        userImage = prefs.getString('image') ?? ''; // 🔹 設定された画像があれば使う
       });
     }
   }
@@ -45,7 +45,7 @@ class ImageChoiceState extends State<ImageChoice> {
 
             if (mounted) {
               setState(() {
-                userImage = newImage; // Update user image
+                userImage = newImage; // 🔹 UI更新
               });
             }
           }
@@ -63,7 +63,7 @@ class ImageChoiceState extends State<ImageChoice> {
                   ? NetworkImage(userImage)
                   : const AssetImage('assets/preimage.JPG') as ImageProvider,
               colorFilter: ColorFilter.mode(
-                Colors.grey.withValues(alpha: 0.5),
+                Colors.black.withAlpha(100),
                 BlendMode.dstATop,
               ),
             ),
