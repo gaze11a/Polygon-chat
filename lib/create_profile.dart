@@ -49,7 +49,7 @@ class CreateProfileState extends State<CreateProfile> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(children: <Widget>[
-                    ImageChoice(model.userName, userImage),
+                    ProfileImageChoice(model.userName, userImage),
 
                     const Text('ユーザーアイコン'),
                     const Divider(height: 20.0, thickness: 2.0),

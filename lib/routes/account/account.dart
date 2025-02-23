@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import 'image_choice.dart';
 
-
 class Account extends StatelessWidget {
   const Account({super.key});
 
@@ -179,9 +178,13 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     Column(
                       children: [
-                        edit
-                            ? ImageChoice(username, userImage) // 🔹 編集モードなら `ImageChoice`
-                            : UserHeader(userheader: userHeader, userimage: userImage), // 🔹 通常モードなら `UserHeader`
+                        // **🔹 編集モードのときは `ProfileImageChoice` & `HeaderImageChoice` を使う**
+                        if (edit) ...[
+                          HeaderImageChoice(username, userHeader), // 🔹 ヘッダー画像の変更
+                          ProfileImageChoice(username, userImage), // 🔹 プロフィール画像の変更
+                        ] else ...[
+                          UserHeader(userheader: userHeader, userimage: userImage), // 🔹 通常モードのとき
+                        ],
                         comment.isNotEmpty ? UserNameComment(username, comment) : UserName(username),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
@@ -201,4 +204,3 @@ class AccountPageState extends State<AccountPage> {
     );
   }
 }
-
