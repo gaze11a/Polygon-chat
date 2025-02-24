@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:polygon/login/create_profile.dart';
-import 'package:polygon/routes/utils/loading_dialog.dart';
 import 'package:polygon/login/reset_password.dart';
 import 'package:polygon/root.dart' as custom_root;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,7 +85,7 @@ class UserLoginState extends State<UserLogin> {
                   child: ElevatedButton(
                     child: const Text('ログイン', style: TextStyle(fontSize: 15)),
                     onPressed: () async {
-                      loadingDialog(context);
+                      //loadingDialog(context);
 
                       try {
                         final loginResult = await auth.signInWithEmailAndPassword(
@@ -94,7 +93,19 @@ class UserLoginState extends State<UserLogin> {
                           password: userPassword,
                         );
 
-                        closeLoadingDialog(navigatorKey.currentContext!);
+
+                        String? idToken = await loginResult.user?.getIdToken();
+                        debugPrint("ID Token: $idToken");
+
+                        if (idToken != null) {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          await prefs.setString('idToken', idToken);
+
+                          // Firestore に `fcmtoken` として配列で保存
+                          await FirebaseFirestore.instance.collection('token').doc(userMail).set({
+                            'fcmtoken': FieldValue.arrayUnion([idToken]), // ← 配列として保存
+                          }, SetOptions(merge: true));
+                        }
 
                         if (loginResult.user?.emailVerified == true) {
                           await saveData(loginResult.user!.email!);
@@ -104,16 +115,24 @@ class UserLoginState extends State<UserLogin> {
                             ),
                           );
                         } else {
-                          setState(() {
-                            infoText = 'メールアドレスの確認が必要です。';
-                          });
+                          showDialog(
+                            context: navigatorKey.currentContext!,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('メール認証が必要です'),
+                                content: const Text('メールアドレスの確認を行ってください。'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         }
                       } catch (e) {
-                        closeLoadingDialog(navigatorKey.currentContext!);
-
-                        setState(() {
-                          showErrorDialog(context, 'ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。');
-                        });
+                        showErrorDialog(navigatorKey.currentContext!, 'ログインに失敗しました。\nメールアドレスまたはパスワードが間違っています。');
                       }
                     },
                   ),

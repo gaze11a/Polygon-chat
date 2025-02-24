@@ -15,9 +15,8 @@ void main() async {
   await Firebase.initializeApp();
 
   await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('your-public-site-key'),
-    androidProvider: AndroidProvider.playIntegrity,
-    appleProvider: AppleProvider.deviceCheck,
+    androidProvider: AndroidProvider.playIntegrity, // ← 本番用
+    appleProvider: AppleProvider.deviceCheck,      // ← iOS用
   );
 
   runApp(

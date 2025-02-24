@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/routes/home/home_grid/comment.dart';
 import 'package:polygon/routes/home/home_grid/image_circle.dart';
-import 'package:polygon/routes/home/home_grid/title_text.dart';
+
+import '../user_tile/title_text.dart';
 
 // ignore: must_be_immutable
 class HomeTile extends StatelessWidget {

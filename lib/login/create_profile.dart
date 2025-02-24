@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:polygon/routes/utils/image_choice.dart'; // 🔥 追加
-import 'package:polygon/routes/home/home.dart';
+import 'package:polygon/login/user_login.dart';
 import 'package:provider/provider.dart';
 import 'package:polygon/routes/utils/model.dart';
 
-import '../routes/utils/loading_dialog.dart';
 import '../main.dart';
 
 class CreateProfile extends StatefulWidget {
@@ -18,7 +16,6 @@ class CreateProfile extends StatefulWidget {
 
 class CreateProfileState extends State<CreateProfile> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  String userImage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +46,6 @@ class CreateProfileState extends State<CreateProfile> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(children: <Widget>[
-                    ProfileImageChoice(model.userName, userImage),
-
-                    const Text('ユーザーアイコン'),
-                    const Divider(height: 20.0, thickness: 2.0),
-
                     model.textForm(context, 'ユーザー名'),
                     model.textForm(context, 'Eメール'),
                     model.textForm(context, 'パスワード'),
@@ -68,7 +60,7 @@ class CreateProfileState extends State<CreateProfile> {
                           ),
                         ),
                         onPressed: () async {
-                          loadingDialog(context);
+                          // loadingDialog(context);
                           model.checkForm(context);
 
                           try {
@@ -92,21 +84,21 @@ class CreateProfileState extends State<CreateProfile> {
                                     .set(
                                   {
                                     'title': model.userName,
-                                    'imageURL': userImage,
-                                    'headerURL': '',
-                                    'comment': '',
                                     'mail': model.userMail,
+                                    'comment': '',
+                                    'headerURL': '',
+                                    'imageURL': '',
                                     'createdAt': Timestamp.now(),
                                   },
                                 );
 
                                 await FirebaseFirestore.instance
                                     .collection('token')
-                                    .doc(model.userName)
+                                    .doc(model.userMail)
                                     .set({'fcmtoken': []});
                               }
 
-                              closeLoadingDialog(navigatorKey.currentContext!);
+                              // closeLoadingDialog(navigatorKey.currentContext!);
 
                               showDialog(
                                 context: navigatorKey.currentContext!,
@@ -119,7 +111,7 @@ class CreateProfileState extends State<CreateProfile> {
                                         onPressed: () async {
                                           Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
-                                              builder: (context) => const HomePage(),
+                                              builder: (context) => const UserLogin(),
                                             ),
                                           );
                                         },
@@ -129,13 +121,13 @@ class CreateProfileState extends State<CreateProfile> {
                                 },
                               );
                             } else {
-                              closeLoadingDialog(navigatorKey.currentContext!);
+                              // closeLoadingDialog(navigatorKey.currentContext!);
                               model.dialog(
                                   navigatorKey.currentContext!,
                                   "そのユーザー名は既に登録されています。");
                             }
                           } catch (e) {
-                            closeLoadingDialog(navigatorKey.currentContext!);
+                            // closeLoadingDialog(navigatorKey.currentContext!);
                             model.dialog(
                                 navigatorKey.currentContext!,
                                 "エラーが発生しました: ${e.toString()}");

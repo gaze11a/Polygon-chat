@@ -36,10 +36,17 @@ class RootWidgetState extends State<RootWidget> {
   Future<void> pushToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
-    final String username = prefs.getString('name') ?? "";
-    await FirebaseFirestore.instance.collection('token').doc(username).update({
-      'fcmtoken': FieldValue.arrayUnion([token])
-    });
+
+    final String userMail = prefs.getString('mail') ?? ''; // メールアドレスを取得
+
+    if (userMail.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('token')
+          .doc(userMail) // ← メールアドレスをキーにする
+          .set({
+        'fcmtoken': FieldValue.arrayUnion([token]) // ← 配列として保存
+      }, SetOptions(merge: true));
+    }
   }
 
   @override
