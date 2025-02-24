@@ -100,6 +100,8 @@ class ProfileImageChoiceState extends State<ProfileImageChoice> {
           setState(() {
             userImage = newImage;
           });
+
+          debugPrint("[DEBUG]: $userImage");
         }
       },
       child: Container(
@@ -168,6 +170,8 @@ class HeaderImageChoiceState extends State<HeaderImageChoice> {
             userHeader = newHeader;
           });
         }
+
+        debugPrint("[DEBUG]: $userHeader");
       },
       child: Container(
         height: size.height / 4,

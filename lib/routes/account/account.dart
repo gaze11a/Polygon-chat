@@ -50,7 +50,7 @@ class AccountPageState extends State<AccountPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     username = prefs.getString('name') ?? '';
     userMail = prefs.getString('mail') ?? '';
-    userImage = prefs.getString('image') ?? '';
+    userImage = prefs.getString('user') ?? '';
     userHeader = prefs.getString('header') ?? '';
     comment = prefs.getString('comment') ?? '';
   }
@@ -109,6 +109,8 @@ class AccountPageState extends State<AccountPage> {
 
                 try {
                   await getData();
+
+                  debugPrint("[DEBUG] userImage: $userImage");
 
                   await FirebaseFirestore.instance.collection('user').doc(username).update({
                     'title': username,
