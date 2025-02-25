@@ -49,3 +49,4 @@ android/app/google-services.json
 # Keystore
 android/key.properties
 
+lib/secrets.dart
