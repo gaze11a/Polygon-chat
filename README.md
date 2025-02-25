@@ -1,26 +1,31 @@
 ## 📱 App Screenshots
 
-### 🔑 Login Screen
-<img src="./assets/screenshots/login_screen.png" alt="Login Screen" width="300">
+### 🔒 Secure & Real-Time Chat with Firestore
+<img src="./assets/screenshots/chat_screen.png" alt="Chat Screen" width="300">  
 
-- Users enter their email and password to log in.
-- Firebase Authentication handles authentication.
-- New users can register via the sign-up option.
-- Forgotten passwords can be reset via email.
+- Chat with confidence using **Firebase Firestore** for real-time and secure messaging.
+- Messages are stored safely, ensuring privacy and reliability.
+- Seamless experience with instant message delivery.
 
-### 🏠 Home Screen
-<img src="./assets/screenshots/home_screen.png" alt="Home Screen" width="300">
+---
 
-- Displays a list of users based on shared interests.
-- Users can search and filter profiles.
-- Clicking a profile navigates to `UserDetail()`.
+### 📝 AI-Powered Chat Summaries
+<img src="./assets/screenshots/summary.png" alt="Chat Summary Screen" width="300">  
 
-### 💬 Chat Screen
-<img src="./assets/screenshots/chat_screen.png" alt="Chat Screen" width="300">
+- **AI-generated chat summaries** help you remember key moments effortlessly.
+- OpenAI analyzes conversations and creates daily recaps automatically.
+- Easily browse past interactions in a structured way.
 
-- Real-time messaging with Firebase Firestore.
-- Users can send and receive messages.
-- Supports text and image messages.
+---
+
+### 🎨 Simple & Clean Home Screen
+<img src="./assets/screenshots/home_screen.png" alt="Home Screen" width="300">  
+
+- A minimalistic design that makes navigation easy.
+- Quickly access chats with users who share your interests.
+- Smooth and intuitive UI for a great user experience.
+
+---
 
 
 ## 📂 Project Structure
@@ -46,6 +51,8 @@ lib/
     │      bubble.dart                 # Chat message bubbles
     │      chat.dart                   # Main chat screen
     │      chatroom.dart               # Individual chat rooms
+    │      chat_summary.dart           # Handles message summarization logic using OpenAI API
+    │      chat_summary_page.dart      # UI for viewing chat summaries in list or calendar format
     │      
     ├─home/
     │  │  home.dart                   # Main home screen
