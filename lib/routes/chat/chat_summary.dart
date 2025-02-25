@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../secrets.dart';
-
 class ChatSummary {
   final String userId;
   final Map<String, List<String>> _cachedMessages = {};
@@ -53,7 +51,7 @@ class ChatSummary {
     }
 
     // 🔥 OpenAI APIで要約を生成
-    const String apiKey = Secrets.openaiApiKey;
+    const String apiKey = String.fromEnvironment("OPENAI_API_KEY", defaultValue: "NOT_SET");
     const String apiUrl = "https://api.openai.com/v1/chat/completions";
 
     const prompt = '''
