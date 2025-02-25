@@ -217,12 +217,30 @@ class ChatSummaryPageState extends State<ChatSummaryPage> {
               ),
               elevation: 4,
               child: ListTile(
-                title: Text(
-                  item['summary']!.split("\n")[0], // タイトル部分を取得
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['date']!, // 日付を表示
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item['summary']!.split('\n')[0], // タイトル部分
+                      style: const TextStyle(
+                        fontSize: 15, // タイトルのフォントサイズを大きく
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 subtitle: Text(
-                  item['summary']!.split("\n").skip(1).join("\n"), // 本文を取得
+                  item['summary']!.split('\n').skip(1).join('\n'), // 要約部分
+                  style: const TextStyle(fontSize: 12),
                 ),
                 leading: const Icon(Icons.calendar_today, color: Colors.blue),
               ),
