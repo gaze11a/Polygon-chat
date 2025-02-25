@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:polygon/routes/utils/model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'chat_summary_page.dart';
+
 class Chat extends StatefulWidget {
   final String opponent;
   final String room;
@@ -108,12 +110,18 @@ class ChatState extends State<Chat> {
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: Text(
-                widget.opponent,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-              ),
+              title: Text(widget.opponent, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
               centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.calendar_today, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ChatSummaryPage(userId: widget.room),
+                    ));
+                  },
+                ),
+              ],
             ),
             body: widget.block
                 ? Center(child: Text('${widget.opponent}をブロックしています'))

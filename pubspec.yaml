@@ -30,6 +30,7 @@ dependencies:
   flutter_email_sender: ^7.0.0
   cached_network_image: ^3.3.1
   firebase_app_check: ^0.3.2+3
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
