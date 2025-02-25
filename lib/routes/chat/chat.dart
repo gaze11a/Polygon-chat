@@ -31,8 +31,8 @@ class ChatState extends State<Chat> {
   final TextEditingController messageController = TextEditingController();
 
   String? username;
-  String? usermail;
-  String? userimage;
+  String? userMail;
+  String? userImage;
 
   @override
   void initState() {
@@ -45,9 +45,17 @@ class ChatState extends State<Chat> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       username = prefs.getString('name') ?? '';
-      usermail = prefs.getString('mail') ?? '';
+      userMail = prefs.getString('mail') ?? '';
     });
   }
+
+  Future<String> getUrl(String username) async {
+    DocumentSnapshot docSnapshot =
+    await FirebaseFirestore.instance.collection('user').doc(username).get();
+    Map<String, dynamic>? record = docSnapshot.data() as Map<String, dynamic>?;
+    return record?['imageURL'] ?? '';
+  }
+
 
   Future<void> sendInitialMessage() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -101,16 +109,20 @@ class ChatState extends State<Chat> {
       child: Consumer<Model>(
         builder: (context, model, child) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.blue.shade50,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
               backgroundColor: const Color.fromRGBO(68, 114, 196, 1.0),
-              elevation: 0,
+              elevation: 2,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: Text(widget.opponent, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              title: Text(widget.opponent,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
               centerTitle: true,
               actions: [
                 IconButton(
@@ -124,66 +136,127 @@ class ChatState extends State<Chat> {
               ],
             ),
             body: widget.block
-                ? Center(child: Text('${widget.opponent}をブロックしています'))
+                ? Center(
+                child: Text('${widget.opponent}をブロックしています',
+                    style: const TextStyle(fontSize: 16)))
                 : Column(
-              children: <Widget>[
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('room')
-                        .doc(widget.room)
-                        .collection(widget.room) // Firestore の `messages` をリアルタイム取得
-                        .where('date', isNotEqualTo: null) // 🔥 `date` がないデータを防ぐ
-                        .orderBy('date', descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      var messages = snapshot.data!.docs;
-                      return ListView.builder(
-                        reverse: true,
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          var messageData = messages[index].data() as Map<String, dynamic>;
-                          return ListTile(
-                            title: Text(messageData['name']),
-                            subtitle: Text(messageData['content']),
-                          );
-                        },
-                      );
-                    },
+                children: <Widget>[
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('room')
+                          .doc(widget.room)
+                          .collection(widget.room)
+                          .where('date', isNotEqualTo: null)
+                          .orderBy('date', descending: true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                        var messages = snapshot.data!.docs;
+                        return ListView.builder(
+                          reverse: true,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 8),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            var messageData = messages[index].data()
+                            as Map<String, dynamic>;
+                            bool isMe = messageData['name'] == username;
+                            return FutureBuilder<String>(
+                              future: getUrl(messageData['name']),
+                              builder: (context, imageSnapshot) {
+                                return Align(
+                                  alignment: isMe
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisAlignment: isMe
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (!isMe)
+                                        CircleAvatar(
+                                          backgroundImage: imageSnapshot.hasData && imageSnapshot.data!.isNotEmpty
+                                              ? NetworkImage(imageSnapshot.data!)
+                                              : const AssetImage('assets/preimage.JPG') as ImageProvider,
+                                          radius: 16,
+                                        ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 12),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 4, horizontal: 4),
+                                        decoration: BoxDecoration(
+                                          color: isMe
+                                              ? Colors.blue.shade300
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(8),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.shade200,
+                                              blurRadius: 4,
+                                              spreadRadius: 1,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          messageData['content'],
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: isMe
+                                                  ? Colors.white
+                                                  : Colors.black87),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: messageController,
-                          decoration: InputDecoration(
-                            hintText: 'メッセージを入力',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: messageController,
+                            decoration: InputDecoration(
+                              hintText: 'メッセージを入力',
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: () async {
-                          String content = messageController.text.trim();
-                          if (content.isNotEmpty) {
-                            await addMessageToFirebase('text', content); // 🔥 `messageController.text` を直接渡す
-                            messageController.clear();
-                          }
-                        },
-                      ),
-                    ],
+                        IconButton(
+                          icon: Icon(Icons.send,
+                              color: Colors.blue.shade700),
+                          onPressed: () async {
+                            String content = messageController.text.trim();
+                            if (content.isNotEmpty) {
+                              await addMessageToFirebase('text', content);
+                              messageController.clear();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
             ),
           );
         },

@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatSummary {
   final String userId;
-  Map<String, List<String>> _cachedMessages = {};
+  final Map<String, List<String>> _cachedMessages = {};
 
   ChatSummary(this.userId);
 
