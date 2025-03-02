@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:polygon/routes/home/user_detail/user_image.dart';
 
 class UserHeader extends StatelessWidget {
-  final String userheader;
-  final String userimage;
+  final String userHeader;
+  final String userImage;
 
-  const UserHeader({required this.userheader, required this.userimage, super.key});
+  const UserHeader({required this.userHeader, required this.userImage, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +13,8 @@ class UserHeader extends StatelessWidget {
     return Stack(
       children: [
         Image(
-          image: userheader.isNotEmpty
-              ? NetworkImage(userheader) as ImageProvider<Object>
+          image: userHeader.isNotEmpty
+              ? NetworkImage(userHeader) as ImageProvider<Object>
               : const AssetImage('assets/preheader.jpg'),
           height: size.height / 4,
           width: size.width,
@@ -23,7 +23,7 @@ class UserHeader extends StatelessWidget {
         Center(
           child: Padding(
             padding: const EdgeInsets.only(top: 100.0),
-            child: UserImage(userimage: userimage),
+            child: UserImage(userImage: userImage),
           ),
         ),
       ],

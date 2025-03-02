@@ -23,8 +23,8 @@ android {
         applicationId = "com.satomitsu.polygon.chat"
         minSdkVersion 23
         targetSdk = flutter.targetSdkVersion
-        versionCode = 4
-        versionName = "1.0.2"
+        versionCode = 5
+        versionName = "1.0.3"
     }
 
     def keystorePropertiesFile = rootProject.file("key.properties")
