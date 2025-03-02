@@ -60,7 +60,7 @@ class UserLoginState extends State<UserLogin> {
                   padding: EdgeInsets.only(top: 10.0, bottom: 30.0),
                   child: Text(
                     'ポリゴンチャット',
-                    style: TextStyle(fontSize: 30),
+                    style: TextStyle(fontSize: 25),
                   ),
                 ),
                 TextFormField(
