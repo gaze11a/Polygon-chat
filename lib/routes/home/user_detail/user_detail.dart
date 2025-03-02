@@ -47,6 +47,12 @@ class UserDetailPageState extends State<UserDetailPage> {
   bool isRequestSent = false;
   bool isSelf = false;
 
+  String roomName = '';
+  bool block = false;
+  List<String> blockUser = [];
+
+  bool chat = false;
+
   @override
   void initState() {
     super.initState();
@@ -100,13 +106,32 @@ class UserDetailPageState extends State<UserDetailPage> {
     if (isFriend) {
       return ElevatedButton(
         style: ElevatedButton.styleFrom(shape: const StadiumBorder(), backgroundColor: Colors.green),
-        child: const Text('二人だけで会話', style: TextStyle(color: Colors.white, fontSize: 18)),
-        onPressed: () {
+        child: const Text('二人だけで会話',
+            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+        onPressed: () async {
+          debugPrint("ボタンが押されました");
+
+          await makeChat(); // ここで完全にデータ取得を待つ
+          debugPrint("makeChat() の処理完了");
+
+          if (!mounted) {
+            debugPrint("コンテキストが失われています。画面遷移をスキップ");
+            return;
+          }
+
+          debugPrint("Chat画面に遷移します");
           Navigator.of(navigatorKey.currentContext!).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => Chat(opponent: title, room: compString(username, title), chatCompUrl: imageURL, block: false, blockUser: []),
+              builder: (context) => Chat(
+                opponent: title,
+                room: compString(username, title),
+                chatCompUrl: imageURL,
+                block: block,
+                blockUser: blockUser,
+              ),
             ),
           );
+          debugPrint("画面遷移完了");
         },
       );
     } else if (isRequestSent) {
@@ -119,6 +144,53 @@ class UserDetailPageState extends State<UserDetailPage> {
       );
     }
   }
+
+  Future<void> makeChat() async {
+    if (username.isEmpty) {
+      debugPrint("username が取得できていません。処理を中断します。");
+      return;
+    }
+
+    roomName = compString(username, title);
+    debugPrint("生成された room name: $roomName");
+
+    try {
+      final stopwatch = Stopwatch()..start();
+      DocumentSnapshot docSnapshot =
+      await FirebaseFirestore.instance.collection('room').doc(roomName).get();
+      stopwatch.stop();
+      debugPrint("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
+
+      if (!docSnapshot.exists) {
+        debugPrint("チャットルームを作成します: $roomName");
+        await FirebaseFirestore.instance.collection('room').doc(roomName).set({
+          'member': [username, title],
+          'block': false,
+          'blockuser': [],
+        });
+        block = false;
+        blockUser = [];
+      } else {
+        debugPrint("既存のチャットルームを取得: $roomName");
+        final data = docSnapshot.data() as Map<String, dynamic>?;
+
+        if (data == null) {
+          debugPrint("Firestore のデータが null です。処理を中断します。");
+          return;
+        }
+
+        block = data['block'] ?? false;
+        blockUser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
+        debugPrint("取得したデータ - block: $block, blockuser: $blockUser");
+      }
+      debugPrint("Firestore からのデータ取得完了");
+    } catch (e) {
+      debugPrint("Firestore でエラーが発生: $e");
+      return;
+
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
