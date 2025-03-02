@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class UserImage extends StatelessWidget {
-  final String userimage;
+  final String userImage;
 
-  const UserImage({required this.userimage, super.key});
+  const UserImage({required this.userImage, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +15,8 @@ class UserImage extends StatelessWidget {
         shape: BoxShape.circle,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: userimage.isNotEmpty
-              ? NetworkImage(userimage) as ImageProvider<Object>
+          image: userImage.isNotEmpty
+              ? NetworkImage(userImage) as ImageProvider<Object>
               : const AssetImage('assets/preimage.JPG'),
         ),
       ),

@@ -33,8 +33,7 @@ class UserDetailPage extends StatefulWidget {
   const UserDetailPage(this.title, this.imageURL, this.headerURL, this.comment, {super.key});
 
   @override
-  UserDetailPageState createState() =>
-      UserDetailPageState();
+  UserDetailPageState createState() => UserDetailPageState();
 }
 
 class UserDetailPageState extends State<UserDetailPage> {
@@ -43,6 +42,11 @@ class UserDetailPageState extends State<UserDetailPage> {
   late final String headerURL;
   late final String comment;
 
+  String username = '';
+  bool isFriend = false;
+  bool isRequestSent = false;
+  bool isSelf = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,140 +54,92 @@ class UserDetailPageState extends State<UserDetailPage> {
     imageURL = widget.imageURL;
     headerURL = widget.headerURL;
     comment = widget.comment;
-  }
-
-  String username = '';
-  String userMail = '';
-  String userImage = '';
-  String roomName = '';
-  bool block = false;
-  List<String> blockUser = [];
-
-  bool chat = false;
-
-  // Function to generate a unique room name
-  String compString(String a, String b) {
-    return (a.compareTo(b) > 0) ? (b + a) : (a + b);
+    getData();
   }
 
   Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       username = prefs.getString('name') ?? '';
-      userMail = prefs.getString('mail') ?? '';
-      userImage = prefs.getString('image') ?? '';
-      chat = username != title;
+      isSelf = (username == title);
+    });
+    if (!isSelf) {
+      checkFriendStatus();
+    }
+  }
+
+  void checkFriendStatus() {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(username)
+        .collection('friends')
+        .doc(title)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists) {
+        setState(() => isFriend = true);
+      } else {
+        setState(() => isFriend = false);
+      }
     });
   }
 
-  Future<void> makeChat() async {
-    if (username.isEmpty) {
-      debugPrint("username が取得できていません。処理を中断します。");
-      return;
+  Future<void> sendFriendRequest() async {
+    await FirebaseFirestore.instance.collection('friend_requests').add({
+      'sender': username,
+      'receiver': title,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+    setState(() => isRequestSent = true);
+  }
+
+  Widget friendRequestButton() {
+    if (isSelf) {
+      return const Text("これはあなたのプロフィールです", style: TextStyle(color: Colors.grey, fontSize: 16));
     }
-
-    roomName = compString(username, title);
-    debugPrint("生成された room name: $roomName");
-
-    try {
-      final stopwatch = Stopwatch()..start();
-      DocumentSnapshot docSnapshot =
-      await FirebaseFirestore.instance.collection('room').doc(roomName).get();
-      stopwatch.stop();
-      debugPrint("Firestore get() 実行時間: ${stopwatch.elapsedMilliseconds}ms");
-
-      if (!docSnapshot.exists) {
-        debugPrint("チャットルームを作成します: $roomName");
-        await FirebaseFirestore.instance.collection('room').doc(roomName).set({
-          'member': [username, title],
-          'block': false,
-          'blockuser': [],
-        });
-        block = false;
-        blockUser = [];
-      } else {
-        debugPrint("既存のチャットルームを取得: $roomName");
-        final data = docSnapshot.data() as Map<String, dynamic>?;
-
-        if (data == null) {
-          debugPrint("Firestore のデータが null です。処理を中断します。");
-          return;
-        }
-
-        block = data['block'] ?? false;
-        blockUser = (data['blockuser'] as List<dynamic>?)?.cast<String>() ?? [];
-        debugPrint("取得したデータ - block: $block, blockuser: $blockUser");
-      }
-
-      debugPrint("Firestore からのデータ取得完了");
-    } catch (e) {
-      debugPrint("Firestore でエラーが発生: $e");
-      return;
+    if (isFriend) {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: const StadiumBorder(), backgroundColor: Colors.green),
+        child: const Text('二人だけで会話', style: TextStyle(color: Colors.white, fontSize: 18)),
+        onPressed: () {
+          Navigator.of(navigatorKey.currentContext!).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => Chat(opponent: title, room: compString(username, title), chatCompUrl: imageURL, block: false, blockUser: []),
+            ),
+          );
+        },
+      );
+    } else if (isRequestSent) {
+      return const Text("フレンド申請中", style: TextStyle(color: Colors.orange, fontSize: 16));
+    } else {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: const StadiumBorder(), backgroundColor: Colors.blue),
+        onPressed: sendFriendRequest,
+        child: const Text('フレンド申請を送信', style: TextStyle(color: Colors.white, fontSize: 18)),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
-
-    return Hero(
-      tag: 'list$title',
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.close, color: Colors.white),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        extendBodyBehindAppBar: true,
-        body: Column(
-          children: [
-            UserHeader(userheader: headerURL, userimage: imageURL),
-            //comment.isNotEmpty ? UserNameComment(title, comment) : UserName(title),
-            chat ? talkButton(context) : Container(),
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => Navigator.of(context).pop()),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          UserHeader(userHeader: headerURL, userImage: imageURL),
+          const SizedBox(height: 20),
+          friendRequestButton(),
+        ],
       ),
     );
   }
 
-  Widget talkButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 7.0,
-        shape: const StadiumBorder(),
-        backgroundColor: Colors.green,
-      ),
-      child: const Text('二人だけで会話',
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-      onPressed: () async {
-        debugPrint("ボタンが押されました");
-
-        await makeChat(); // ここで完全にデータ取得を待つ
-        debugPrint("makeChat() の処理完了");
-
-        if (!mounted) {
-          debugPrint("コンテキストが失われています。画面遷移をスキップ");
-          return;
-        }
-
-        debugPrint("Chat画面に遷移します");
-        Navigator.of(navigatorKey.currentContext!).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => Chat(
-              opponent: title,
-              room: compString(username, title),
-              chatCompUrl: imageURL,
-              block: block,
-              blockUser: blockUser,
-            ),
-          ),
-        );
-        debugPrint("画面遷移完了");
-      },
-    );
+  String compString(String a, String b) {
+    return (a.compareTo(b) > 0) ? (b + a) : (a + b);
   }
 }

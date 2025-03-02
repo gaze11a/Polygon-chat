@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:polygon/routes/account/account.dart';
 import 'package:polygon/routes/chat/chatroom.dart';
-import 'package:polygon/routes/home/home.dart';
+import 'package:polygon/routes/home/friend_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,13 +20,13 @@ class RootWidgetState extends State<RootWidget> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   static const footerIcons = [
-    Icons.home,
+    Icons.people,
     Icons.textsms,
     Icons.account_circle,
   ];
 
   static const footerItemNames = [
-    'ホーム',
+    'フレンド',
     'トーク',
     'アカウント',
   ];
@@ -82,7 +82,7 @@ class RootWidgetState extends State<RootWidget> {
   }
 
   void setRoute() {
-    routes = [const Home(), const Chatroom(), const Account()];
+    routes = [const FriendList(), const Chatroom(), const Account()];
   }
 
   void onItemTapped(int index) {

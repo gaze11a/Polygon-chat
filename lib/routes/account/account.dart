@@ -185,7 +185,7 @@ class AccountPageState extends State<AccountPage> {
                           HeaderImageChoice(username, userHeader), // 🔹 ヘッダー画像の変更
                           ProfileImageChoice(username, userImage), // 🔹 プロフィール画像の変更
                         ] else ...[
-                          UserHeader(userheader: userHeader, userimage: userImage), // 🔹 通常モードのとき
+                          UserHeader(userHeader: userHeader, userImage: userImage), // 🔹 通常モードのとき
                         ],
                         comment.isNotEmpty ? UserNameComment(username, comment) : UserName(username),
                         Padding(
